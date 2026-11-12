@@ -382,4 +382,220 @@ function goalHTML(g){let p=g.target?Math.min(100,g.saved/g.target*100):0;return 
 function renderCalendar(){
   let y=+month.slice(0,4),mo=+month.slice(5,7)-1,first=new Date(y,mo,1),days=new Date(y,mo+1,0).getDate(),start=(first.getDay()+6)%7;
   let grid=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x=>`<div class="dow">${x}</div>`).join("");
-  let ev=allProjected().filter(x=>x.date
+  let ev=allProjected().filter(x=>x.date.startsWith(month));
+  for(let i=0;i<start;i++)grid+=`<div class="day"></div>`;
+  for(let d=1;d<=days;d++){
+    let date=`${month}-${String(d).padStart(2,"0")}`,items=ev.filter(x=>x.date===date),today=date===iso(new Date());
+    let shown=items.slice(0,3),more=items.length-shown.length;
+    grid+=`<div class="day ${today?"today":""}"><div class="daynum">${d}</div>${shown.map(x=>`<div class="event ${x.type==="income"?"inc":"exp"}" title="${esc(x.description)} · ${money(x.amount)}">${x.type==="income"?"+":"−"} ${esc(x.description)}</div>`).join("")}${more>0?`<div class="more">+${more} more</div>`:""}</div>`;
+  }
+  $("calendarGrid").innerHTML=grid;
+}
+
+function renderTx(){
+  let q=($("search").value||"").toLowerCase();
+  let ft=$("filterType").value,fs=$("filterStatus").value;
+  let r=allProjected().filter(x=>!x.projected)
+    .filter(x=>(x.description+" "+x.category).toLowerCase().includes(q))
+    .filter(x=>!ft||x.type===ft)
+    .filter(x=>!fs||x.status===fs);
+  r.sort((a,b)=>{
+    let va=a[sortKey],vb=b[sortKey];
+    if(sortKey==="amount"){va=+va;vb=+vb}
+    return (va<vb?-1:va>vb?1:0)*sortDir;
+  });
+  $("txTable").innerHTML=r.length?r.map(x=>`<tr>
+    <td>${x.date}</td>
+    <td><span class="pill ${x.type}">${x.type}</span></td>
+    <td>${esc(x.description)}${x.notes?` <span class="muted">(${esc(x.notes)})</span>`:""}</td>
+    <td>${esc(x.category)}</td>
+    <td><span class="pill ${x.status}">${x.status}</span></td>
+    <td class="${x.type==="income"?"good":"bad"}"><b>${x.type==="income"?"+":"−"}${money(x.amount)}</b></td>
+    <td style="white-space:nowrap">
+      <button class="btn icon" onclick="editTx('${x.id}')" title="Edit">✎</button>
+      <button class="btn icon danger" onclick="delTx('${x.id}')" title="Delete">×</button>
+    </td>
+  </tr>`).join(""):`<tr><td colspan="7"><div class="empty">No transactions match your filters.</div></td></tr>`;
+}
+
+function renderRecurring(){
+  $("recurringList").innerHTML=S.rec.length?S.rec.map(r=>{
+    let next=nextOccurrence(r);
+    return `<div class="row"><div class="row-main"><b>${esc(r.description)}</b><span>${r.day}th monthly · ${esc(r.category)} · starts ${r.start}${r.end?" · ends "+r.end:""}${next?" · next "+next:""}</span></div><div style="display:flex;gap:5px;align-items:center"><b>${money(r.amount)}</b><button class="btn icon" onclick="editRec('${r.id}')" title="Edit">✎</button><button class="btn icon danger" onclick="delRec('${r.id}')" title="Delete">×</button></div></div>`;
+  }).join(""):`<div class="empty">No recurring items.</div>`;
+}
+function nextOccurrence(r){
+  let today=iso(new Date());
+  for(let i=0;i<=12;i++){
+    let m=addMonths(today.slice(0,7),i);
+    let day=Math.min(Number(r.day)||1,new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate());
+    let date=m+"-"+String(day).padStart(2,"0");
+    if(date>=today&&date>=r.start&&(!r.end||date<=r.end))return date;
+  }
+  return null;
+}
+
+function renderInstallments(){
+  $("installmentList").innerHTML=S.inst.length?S.inst.map(i=>{
+    let remain=Math.max(0,i.total-i.paid),months=i.monthly>0?Math.ceil(remain/i.monthly):0;
+    let pct=i.total?Math.min(100,i.paid/i.total*100):0;
+    return `<div class="row"><div style="flex:1"><b>${esc(i.name)}</b><span class="muted" style="font-size:10px;display:block">${esc(i.category)} · next ${i.date} · ${months} payment${months===1?"":"s"} left · ${money(remain)} remaining</span><div class="progress" style="margin-top:7px"><i style="width:${pct}%"></i></div></div><div style="display:flex;gap:5px;align-items:center"><b>${money(i.monthly)}/mo</b><button class="btn icon" onclick="editInst('${i.id}')" title="Edit">✎</button><button class="btn icon danger" onclick="delInst('${i.id}')" title="Delete">×</button></div></div>`;
+  }).join(""):`<div class="empty">No installments.</div>`;
+}
+
+function renderGoals(){
+  $("goalList").innerHTML=S.goals.length?S.goals.map(g=>{
+    let pct=g.target?Math.min(100,g.saved/g.target*100):0;
+    return `<div class="row"><div style="flex:1"><div class="statline"><span class="goal-name">${esc(g.name)}</span><b>${money(g.saved)} / ${money(g.target)}</b></div><div class="progress"><i style="width:${pct}%"></i></div><div class="statline"><span>${g.date?"Target "+g.date:"No target date"}</span><span>${g.monthly?money(g.monthly)+"/mo":""}${pct>=100?' · <b class="good">Complete!</b>':''}</span></div></div><div style="display:flex;gap:5px"><button class="btn icon" onclick="editGoal('${g.id}')" title="Edit">✎</button><button class="btn icon danger" onclick="delGoal('${g.id}')" title="Delete">×</button></div></div>`;
+  }).join(""):`<div class="empty">No goals.</div>`;
+}
+
+function render(){fillMonthSelects();$("dashMonth").value=month;$("calMonth").value=month;renderDashboard();renderCalendar();renderTx();renderRecurring();renderInstallments();renderGoals();setupCats()}
+
+// ---------- Edit functions ----------
+function editTx(id){
+  let x=S.tx.find(t=>t.id===id);if(!x)return;
+  $("txEditId").value=id;$("txType").value=x.type;setupCats();$("txAmount").value=x.amount;$("txDate").value=x.date;
+  $("txCategory").value=x.category;$("txDesc").value=x.description;$("txStatus").value=x.status;$("txNotes").value=x.notes||"";
+  $("txFormTitle").textContent="Edit transaction";$("txSubmit").textContent="Update";$("txCancel").style.display="";
+  document.querySelector('[data-view="transactions"]').click();
+  $("txDesc").focus();
+}
+function cancelTxEdit(){
+  $("txForm").reset();$("txEditId").value="";$("txFormTitle").textContent="Add transaction";$("txSubmit").textContent="Add transaction";$("txCancel").style.display="none";$("txDate").value=iso(new Date());setupCats();
+}
+function editRec(id){
+  let r=S.rec.find(t=>t.id===id);if(!r)return;
+  $("recEditId").value=id;$("recType").value=r.type;setupCats();$("recAmount").value=r.amount;$("recStart").value=r.start;
+  $("recCategory").value=r.category;$("recDesc").value=r.description;$("recDay").value=r.day;$("recEnd").value=r.end||"";
+  $("recFormTitle").textContent="Edit recurring item";$("recSubmit").textContent="Update";$("recCancel").style.display="";
+  document.querySelector('[data-view="recurring"]').click();
+}
+function cancelRecEdit(){$("recForm").reset();$("recEditId").value="";$("recFormTitle").textContent="Add recurring item";$("recSubmit").textContent="Add recurring";$("recCancel").style.display="none";$("recStart").value=iso(new Date());setupCats()}
+function editInst(id){
+  let i=S.inst.find(t=>t.id===id);if(!i)return;
+  $("instEditId").value=id;$("instName").value=i.name;$("instTotal").value=i.total;$("instMonthly").value=i.monthly;
+  $("instPaid").value=i.paid;$("instDate").value=i.date;$("instCategory").value=i.category;
+  $("instFormTitle").textContent="Edit installment";$("instSubmit").textContent="Update";$("instCancel").style.display="";
+  document.querySelector('[data-view="installments"]').click();
+}
+function cancelInstEdit(){$("instForm").reset();$("instEditId").value="";$("instFormTitle").textContent="Add installment";$("instSubmit").textContent="Add installment";$("instCancel").style.display="none";$("instDate").value=iso(new Date())}
+function editGoal(id){
+  let g=S.goals.find(t=>t.id===id);if(!g)return;
+  $("goalEditId").value=id;$("goalName").value=g.name;$("goalTarget").value=g.target;$("goalSaved").value=g.saved;
+  $("goalDate").value=g.date||"";$("goalMonthly").value=g.monthly||"";
+  $("goalFormTitle").textContent="Edit goal";$("goalSubmit").textContent="Update";$("goalCancel").style.display="";
+  document.querySelector('[data-view="goals"]').click();
+}
+function cancelGoalEdit(){$("goalForm").reset();$("goalEditId").value="";$("goalFormTitle").textContent="Add savings goal";$("goalSubmit").textContent="Add goal";$("goalCancel").style.display="none"}
+
+// ---------- Modal ----------
+function confirmModal(title,msg,onConfirm){
+  $("modalTitle").textContent=title;$("modalMsg").textContent=msg;
+  $("modalBg").classList.add("show");
+  $("modalConfirm").onclick=()=>{closeModal();onConfirm()};
+}
+function closeModal(){$("modalBg").classList.remove("show")}
+
+// ---------- Delete ----------
+function delTx(id){confirmModal("Delete transaction?","This action cannot be undone.",()=>{S.tx=S.tx.filter(x=>x.id!==id);save();toast("Transaction deleted","success")})}
+function delRec(id){confirmModal("Delete recurring item?","Future projected entries will disappear.",()=>{S.rec=S.rec.filter(x=>x.id!==id);save();toast("Recurring item deleted","success")})}
+function delInst(id){confirmModal("Delete installment?","Payment plan will be removed.",()=>{S.inst=S.inst.filter(x=>x.id!==id);save();toast("Installment deleted","success")})}
+function delGoal(id){confirmModal("Delete savings goal?","Progress will be lost.",()=>{S.goals=S.goals.filter(x=>x.id!==id);save();toast("Goal deleted","success")})}
+
+// ---------- Export / Import / Reset ----------
+function exportJSON(){
+  let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(b);a.download="money-planner-backup.json";a.click();URL.revokeObjectURL(a.href);
+  toast("Backup downloaded","success");
+}
+$("import").onchange=async e=>{
+  try{
+    let x=JSON.parse(await e.target.files[0].text());
+    if(!Array.isArray(x.tx)||!Array.isArray(x.rec)||!Array.isArray(x.inst)||!Array.isArray(x.goals))throw 0;
+    S=x;save();toast("Backup imported","success");
+  }catch{alert("Invalid backup file")}
+  e.target.value="";
+};
+function resetAll(){confirmModal("Reset all data?","Every transaction, goal, installment and recurring item will be deleted permanently.",()=>{S={tx:[],rec:[],inst:[],goals:[]};save();toast("All data reset","success")})}
+
+// ---------- Theme ----------
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  $("themeBtn").textContent=t==="dark"?"☀️":"🌙";
+  localStorage.setItem(THEME_KEY,t);
+}
+function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")}
+(function initTheme(){
+  let saved=localStorage.getItem(THEME_KEY);
+  let pref=saved||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  applyTheme(pref);
+})();
+
+// ---------- Tabs ----------
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");$(b.dataset.view).classList.add("active");
+});
+
+// ---------- Sorting ----------
+document.querySelectorAll(".table th[data-sort]").forEach(th=>th.onclick=()=>{
+  let k=th.dataset.sort;
+  if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=-1}
+  renderTx();
+});
+
+// ---------- Event wiring ----------
+$("dashMonth").onchange=e=>{month=e.target.value;render()};
+$("calMonth").onchange=e=>{month=e.target.value;render()};
+$("search").oninput=renderTx;
+$("filterType").onchange=renderTx;
+$("filterStatus").onchange=renderTx;
+$("txType").onchange=setupCats;
+$("recType").onchange=setupCats;
+
+$("txForm").onsubmit=e=>{
+  e.preventDefault();
+  let id=$("txEditId").value;
+  let data={type:$("txType").value,amount:+$("txAmount").value,date:$("txDate").value,category:$("txCategory").value,description:$("txDesc").value,status:$("txStatus").value,notes:$("txNotes").value};
+  if(id){S.tx=S.tx.map(t=>t.id===id?{...t,...data}:t);toast("Transaction updated","success")}
+  else{S.tx.push({id:uid(),...data});toast("Transaction added","success")}
+  save();cancelTxEdit();
+};
+$("recForm").onsubmit=e=>{
+  e.preventDefault();
+  let id=$("recEditId").value;
+  let data={type:$("recType").value,amount:+$("recAmount").value,start:$("recStart").value,end:$("recEnd").value,category:$("recCategory").value,description:$("recDesc").value,day:+$("recDay").value};
+  if(id){S.rec=S.rec.map(r=>r.id===id?{...r,...data}:r);toast("Recurring item updated","success")}
+  else{S.rec.push({id:uid(),...data});toast("Recurring item added","success")}
+  save();cancelRecEdit();
+};
+$("instForm").onsubmit=e=>{
+  e.preventDefault();
+  let id=$("instEditId").value;
+  let data={name:$("instName").value,total:+$("instTotal").value,monthly:+$("instMonthly").value,paid:+$("instPaid").value,date:$("instDate").value,category:$("instCategory").value};
+  if(id){S.inst=S.inst.map(i=>i.id===id?{...i,...data}:i);toast("Installment updated","success")}
+  else{S.inst.push({id:uid(),...data});toast("Installment added","success")}
+  save();cancelInstEdit();
+};
+$("goalForm").onsubmit=e=>{
+  e.preventDefault();
+  let id=$("goalEditId").value;
+  let data={name:$("goalName").value,target:+$("goalTarget").value,saved:+$("goalSaved").value,date:$("goalDate").value,monthly:+$("goalMonthly").value};
+  if(id){S.goals=S.goals.map(g=>g.id===id?{...g,...data}:g);toast("Goal updated","success")}
+  else{S.goals.push({id:uid(),...data});toast("Goal added","success")}
+  save();cancelGoalEdit();
+};
+
+// Esc closes modal
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+
+// ---------- Init ----------
+$("txDate").value=iso(new Date());
+$("recStart").value=iso(new Date());
+$("instDate").value=iso(new Date());
+render();
+</script>
+</body>
+</html>
