@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Planner</title>
+<style>
+:root{
+  --bg:#f6f7fb; --card:#fff; --text:#20232b; --muted:#737887;
+  --border:#e7e9ef; --accent:#6c63ff; --accent2:#8b84ff;
+  --green:#1d9b69; --red:#d84d62; --orange:#d98928; --shadow:0 10px 35px rgba(32,35,43,.07);
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit} button{cursor:pointer}
+.app{max-width:1400px;margin:auto;padding:28px}
+header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}
+.brand{display:flex;align-items:center;gap:14px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;display:grid;place-items:center;font-weight:800;font-size:20px}
+h1{font-size:25px;margin:0}.subtitle{color:var(--muted);font-size:13px;margin-top:3px}
+.header-actions{display:flex;gap:9px}.btn{border:1px solid var(--border);background:white;padding:10px 14px;border-radius:10px;font-weight:600;color:var(--text)}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn.danger{color:var(--red)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.metric-label{font-size:12px;color:var(--muted);font-weight:600}.metric{font-size:25px;font-weight:800;margin:7px 0}.metric.green{color:var(--green)}.metric.red{color:var(--red)}.metric.orange{color:var(--orange)}
+.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:18px}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.section-title h2{font-size:16px;margin:0}.small{font-size:12px;color:var(--muted)}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select{border:1px solid var(--border);border-radius:9px;padding:10px 11px;background:#fff;outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:11px}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}.table th{background:#fafbfc;color:var(--muted);font-size:11px;text-transform:uppercase}.table tr:last-child td{border-bottom:0}.amount{font-weight:750}.income{color:var(--green)}.expense{color:var(--red)}
+.pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:750;background:#f0f1f5}.pill.paid{background:#e9f8f1;color:var(--green)}.pill.planned{background:#fff3df;color:var(--orange)}.pill.fixed{background:#eeecff;color:#5d55d9}
+.monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.monthbar select{width:180px}
+.progress{height:9px;background:#eeeef4;border-radius:99px;overflow:hidden;margin-top:9px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:inherit}
+.chart{height:180px;display:flex;align-items:end;gap:10px;padding:10px 2px 0}.bar-group{flex:1;height:100%;display:flex;align-items:end;gap:3px;min-width:0}.bar{flex:1;border-radius:5px 5px 0 0;min-height:3px}.bar.in{background:#68c99e}.bar.out{background:#f08a9b}.bar-label{font-size:9px;color:var(--muted);text-align:center;margin-top:5px}
+.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
+.footer{padding:25px 0 5px;color:var(--muted);font-size:11px;text-align:center}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}}
+@media(max-width:600px){.app{padding:15px}.grid{grid-template-columns:1fr 1fr}header{align-items:flex-start}.header-actions{flex-direction:column}.form{grid-template-columns:1fr}.field.full{grid-column:auto}.metric{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div class="logo">€</div>
+    <div><h1>Money Planner</h1><div class="subtitle">Plan your income, expenses and future money.</div></div>
+  </div>
+  <div class="header-actions">
+    <button class="btn" onclick="exportData()">Export</button>
+    <label class="btn" style="display:flex;align-items:center">Import <input id="importFile" type="file" accept=".json" hidden></label>
+    <button class="btn danger" onclick="resetData()">Reset</button>
+  </div>
+</header>
+
+<section class="grid">
+  <div class="card"><div class="metric-label">TOTAL INCOME</div><div id="totalIncome" class="metric green">0 lei</div><div class="small">Selected month</div></div>
+  <div class="card"><div class="metric-label">PLANNED EXPENSES</div><div id="totalExpense" class="metric red">0 lei</div><div class="small">Selected month</div></div>
+  <div class="card"><div class="metric-label">REMAINING</div><div id="remaining" class="metric">0 lei</div><div class="small">Income − expenses</div></div>
+  <div class="card"><div class="metric-label">EXPENSE RATE</div><div id="expenseRate" class="metric orange">0%</div><div class="small">Of monthly income</div></div>
+</section>
+
+<div class="layout">
+<main>
+  <div class="card">
+    <div class="section-title"><h2>Monthly overview</h2><div class="monthbar"><select id="monthSelect"></select></div></div>
+    <div id="balanceMessage" class="small"></div>
+    <div class="progress"><i id="progress"></i></div>
+    <div class="chart" id="chart"></div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="section-title"><h2>Transactions & plans</h2><div class="small" id="entryCount"></div></div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Category</th><th>Status</th><th>Amount</th><th></th></tr></thead>
+        <tbody id="entries"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<aside>
+  <div class="card">
+    <div class="section-title"><h2>Add income / expense</h2></div>
+    <form id="entryForm" class="form">
+      <div class="field"><label>Type</label><select id="type"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+      <div class="field"><label>Amount (lei)</label><input id="amount" type="number" min="0" step="0.01" required placeholder="0"></div>
+      <div class="field"><label>Date</label><input id="date" type="date" required></div>
+      <div class="field"><label>Category</label><select id="category"></select></div>
+      <div class="field full"><label>Description</label><input id="description" required placeholder="e.g. Salary, rent, groceries..."></div>
+      <div class="field"><label>Status</label><select id="status"><option value="planned">Planned</option><option value="paid">Paid</option></select></div>
+      <div class="field"><label>Recurring</label><select id="recurring"><option value="no">No</option><option value="monthly">Monthly</option></select></div>
+      <div class="field full"><label>Notes</label><input id="notes" placeholder="Optional"></div>
+      <div class="field full form-actions"><button type="reset" class="btn">Clear</button><button class="btn primary">Add entry</button></div>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="section-title"><h2>Category totals</h2></div>
+    <div id="categories"></div>
+  </div>
+</aside>
+</div>
+
+<div class="footer">Your data stays in this browser using localStorage. No account or server required.</div>
+</div>
+
+<script>
+const KEY="money-planner-v1";
+const expenseCats=["Housing","Food","Transport","Utilities","Subscriptions","Shopping","Health","Entertainment","Debt","Other"];
+const incomeCats=["Salary","Business","Freelance","Gift","Other"];
+let data=JSON.parse(localStorage.getItem(KEY)||"[]");
+
+const $=id=>document.getElementById(id);
+function money(n){return new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+" lei"}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function dateISO(d){return new Date(d).toISOString().slice(0,10)}
+function currentMonth(){return dateISO(new Date()).slice(0,7)}
+function monthLabel(m){return new Date(m+"-01T12:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"})}
+function populateMonths(){
+  const months=new Set([currentMonth()]);
+  data.forEach(x=>months.add(x.date.slice(0,7)));
+  for(let i=1;i<=11;i++){let d=new Date();d.setMonth(d.getMonth()+i);months.add(d.toISOString().slice(0,7))}
+  const arr=[...months].sort();
+  const old=$("monthSelect").value;
+  $("monthSelect").innerHTML=arr.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join("");
+  $("monthSelect").value=arr.includes(old)?old:currentMonth();
+}
+function categories(){
+  const cats=$("type").value==="income"?incomeCats:expenseCats;
+  $("category").innerHTML=cats.map(x=>`<option>${x}</option>`).join("");
+}
+function render(){
+  populateMonths(); categories();
+  const m=$("monthSelect").value||currentMonth();
+  const rows=data.filter(x=>x.date.startsWith(m)).sort((a,b)=>a.date.localeCompare(b.date));
+  const income=rows.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0);
+  const expense=rows.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0);
+  const remain=income-expense, rate=income?expense/income*100:0;
+  $("totalIncome").textContent=money(income); $("totalExpense").textContent=money(expense);
+  $("remaining").textContent=money(remain); $("remaining").className="metric "+(remain<0?"red":"green");
+  $("expenseRate").textContent=rate.toFixed(1)+"%";
+  $("progress").style.width=Math.min(rate,100)+"%";
+  $("balanceMessage").textContent=remain>=0?`You have ${money(remain)} left after planned expenses.`:`You are ${money(Math.abs(remain))} over budget.`;
+  $("entryCount").textContent=rows.length+" entries";
+  $("entries").innerHTML=rows.length?rows.map(x=>`
+    <tr><td>${x.date}</td><td><span class="pill ${x.type==="income"?"paid":"planned"}">${x.type}</span></td>
+    <td>${esc(x.description)}</td><td>${esc(x.category)}</td><td><span class="pill ${x.status}">${x.status}</span></td>
+    <td class="amount ${x.type==="income"?"income":"expense"}">${x.type==="income"?"+":"−"}${money(x.amount)}</td>
+    <td><button class="btn" style="padding:5px 8px" onclick="removeEntry('${x.id}')">×</button></td></tr>`).join("")
+    :`<tr><td colspan="7"><div class="empty">No entries for this month.</div></td></tr>`;
+  renderCategories(rows); renderChart();
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderCategories(rows){
+  const map={}; rows.filter(x=>x.type==="expense").forEach(x=>map[x.category]=(map[x.category]||0)+x.amount);
+  const total=Object.values(map).reduce((a,b)=>a+b,0);
+  const items=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  $("categories").innerHTML=items.length?items.map(([c,v])=>`<div style="margin:11px 0"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${esc(c)}</span><b>${money(v)}</b></div><div class="progress"><i style="width:${total?v/total*100:0}%"></i></div></div>`).join(""):`<div class="empty">No expenses yet.</div>`;
+}
+function renderChart(){
+  const months=[...Array(6)].map((_,i)=>{let d=new Date();d.setMonth(d.getMonth()-5+i);return d.toISOString().slice(0,7)});
+  const vals=months.map(m=>{let r=data.filter(x=>x.date.startsWith(m));return [r.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0),r.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0)]});
+  const max=Math.max(1,...vals.flat());
+  $("chart").innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:0"><div class="bar-group"><div class="bar in" title="Income: ${money(v[0])}" style="height:${v[0]/max*100}%"></div><div class="bar out" title="Expenses: ${money(v[1])}" style="height:${v[1]/max*100}%"></div></div><div class="bar-label">${new Date(months[i]+"-01T12:00:00").toLocaleDateString("en-GB",{month:"short"})}</div></div>`).join("");
+}
+$("type").addEventListener("change",categories);
+$("monthSelect").addEventListener("change",render);
+$("entryForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ data.push({id:crypto.randomUUID(),type:$("type").value,amount:Number($("amount").value),date:$("date").value,
+ category:$("category").value,description:$("description").value,status:$("status").value,recurring:$("recurring").value,notes:$("notes").value});
+ save(); e.target.reset(); $("date").value=dateISO(new Date()); categories();
+});
+function removeEntry(id){if(confirm("Delete this entry?")){data=data.filter(x=>x.id!==id);save()}}
+function resetData(){if(confirm("Delete all saved data?")){data=[];save()}}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="money-planner-backup.json";a.click();URL.revokeObjectURL(a.href)}
+$("importFile").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;try{const imported=JSON.parse(await f.text());if(!Array.isArray(imported))throw Error();data=imported;save()}catch{alert("Invalid backup file.")}e.target.value=""});
+$("date").value=dateISO(new Date()); render();
+</script>
+</body>
+</html>
