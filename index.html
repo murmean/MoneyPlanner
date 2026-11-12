@@ -1,178 +1,203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Money Planner</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Money Planner Pro</title>
 <style>
-:root{
-  --bg:#f6f7fb; --card:#fff; --text:#20232b; --muted:#737887;
-  --border:#e7e9ef; --accent:#6c63ff; --accent2:#8b84ff;
-  --green:#1d9b69; --red:#d84d62; --orange:#d98928; --shadow:0 10px 35px rgba(32,35,43,.07);
-}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,select{font:inherit} button{cursor:pointer}
-.app{max-width:1400px;margin:auto;padding:28px}
-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}
-.brand{display:flex;align-items:center;gap:14px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;display:grid;place-items:center;font-weight:800;font-size:20px}
-h1{font-size:25px;margin:0}.subtitle{color:var(--muted);font-size:13px;margin-top:3px}
-.header-actions{display:flex;gap:9px}.btn{border:1px solid var(--border);background:white;padding:10px 14px;border-radius:10px;font-weight:600;color:var(--text)}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.btn.danger{color:var(--red)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-.metric-label{font-size:12px;color:var(--muted);font-weight:600}.metric{font-size:25px;font-weight:800;margin:7px 0}.metric.green{color:var(--green)}.metric.red{color:var(--red)}.metric.orange{color:var(--orange)}
-.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:18px}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.section-title h2{font-size:16px;margin:0}.small{font-size:12px;color:var(--muted)}
-.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-input,select{border:1px solid var(--border);border-radius:9px;padding:10px 11px;background:#fff;outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
-.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
-.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:11px}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}.table th{background:#fafbfc;color:var(--muted);font-size:11px;text-transform:uppercase}.table tr:last-child td{border-bottom:0}.amount{font-weight:750}.income{color:var(--green)}.expense{color:var(--red)}
-.pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:750;background:#f0f1f5}.pill.paid{background:#e9f8f1;color:var(--green)}.pill.planned{background:#fff3df;color:var(--orange)}.pill.fixed{background:#eeecff;color:#5d55d9}
-.monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.monthbar select{width:180px}
-.progress{height:9px;background:#eeeef4;border-radius:99px;overflow:hidden;margin-top:9px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:inherit}
-.chart{height:180px;display:flex;align-items:end;gap:10px;padding:10px 2px 0}.bar-group{flex:1;height:100%;display:flex;align-items:end;gap:3px;min-width:0}.bar{flex:1;border-radius:5px 5px 0 0;min-height:3px}.bar.in{background:#68c99e}.bar.out{background:#f08a9b}.bar-label{font-size:9px;color:var(--muted);text-align:center;margin-top:5px}
-.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
-.footer{padding:25px 0 5px;color:var(--muted);font-size:11px;text-align:center}
-@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}}
-@media(max-width:600px){.app{padding:15px}.grid{grid-template-columns:1fr 1fr}header{align-items:flex-start}.header-actions{flex-direction:column}.form{grid-template-columns:1fr}.field.full{grid-column:auto}.metric{font-size:20px}}
+:root{--bg:#f5f6fa;--panel:#fff;--text:#171922;--muted:#737783;--line:#e7e8ee;--accent:#6d5dfc;--accent2:#9a90ff;--good:#159a68;--bad:#d94d62;--warn:#d58a27;--shadow:0 12px 35px #2222  }
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1500px;margin:auto;padding:24px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:20px}.brand{display:flex;gap:12px;align-items:center}.logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-weight:900}.brand h1{margin:0;font-size:24px}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:10px;font-weight:700;color:var(--text)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{color:var(--bad)}
+.tabs{display:flex;gap:5px;overflow:auto;background:#fff;border:1px solid var(--line);padding:5px;border-radius:13px;margin-bottom:18px}.tab{border:0;background:transparent;padding:10px 15px;border-radius:9px;font-weight:700;color:var(--muted);white-space:nowrap}.tab.active{background:#eeecff;color:#5b50d8}
+.view{display:none}.view.active{display:block}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow)}.label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.07em}.big{font-size:23px;font-weight:900;margin:6px 0}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.layout{display:grid;grid-template-columns:1.4fr .6fr;gap:16px;margin-top:16px}.title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.title h2{font-size:15px;margin:0}.muted{font-size:12px;color:var(--muted)}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.field{display:flex;flex-direction:column;gap:5px}.full{grid-column:1/-1}label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase}input,select{width:100%;border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px;outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #6d5dfc18}.actions-row{display:flex;justify-content:flex-end;gap:8px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}.table th{background:#fafafa;color:var(--muted);font-size:10px;text-transform:uppercase}.table tr:last-child td{border:0}
+.pill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:900;text-transform:uppercase}.pill.income,.pill.paid,.pill.active{background:#e8f8f1;color:var(--good)}.pill.expense,.pill.overdue{background:#fdebed;color:var(--bad)}.pill.planned,.pill.upcoming{background:#fff2dc;color:var(--warn)}.pill.credit{background:#eeecff;color:#5c51d9}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.list{display:flex;flex-direction:column;gap:8px}.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.row-main{min-width:0}.row-main b{display:block;font-size:12px}.row-main span{font-size:10px;color:var(--muted)}
+.progress{height:9px;background:#ececf2;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:inherit}
+.monthnav{display:flex;gap:7px;align-items:center}.monthnav button{padding:7px 10px}.monthnav select{width:170px}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden}.dow{background:#fafafa;color:var(--muted);font-size:10px;font-weight:800;padding:9px}.day{min-height:105px;background:#fff;border-top:1px solid var(--line);border-right:1px solid var(--line);padding:8px}.day:nth-child(7n){border-right:0}.daynum{font-size:11px;font-weight:800}.today{outline:2px solid var(--accent);outline-offset:-2px}.event{margin-top:5px;padding:4px 5px;border-radius:6px;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.event.exp{background:#fdebed;color:var(--bad)}.event.inc{background:#e8f8f1;color:var(--good)}
+.goal{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.goal-name{font-size:12px;font-weight:800}.goal-meta{font-size:10px;color:var(--muted)}.goal-actions{display:flex;gap:5px}
+.statline{display:flex;justify-content:space-between;font-size:11px;margin:8px 0}.empty{text-align:center;color:var(--muted);padding:25px;font-size:12px}
+.toast{position:fixed;right:20px;bottom:20px;background:#171922;color:#fff;padding:11px 14px;border-radius:10px;font-size:12px;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:650px){.app{padding:12px}.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}.actions{justify-content:flex-end}.form{grid-template-columns:1fr}.full{grid-column:auto}.calendar{min-width:700px}.calendar-wrap{overflow:auto}.day{min-height:90px}}
 </style>
 </head>
 <body>
 <div class="app">
-<header>
-  <div class="brand">
-    <div class="logo">€</div>
-    <div><h1>Money Planner</h1><div class="subtitle">Plan your income, expenses and future money.</div></div>
-  </div>
-  <div class="header-actions">
-    <button class="btn" onclick="exportData()">Export</button>
-    <label class="btn" style="display:flex;align-items:center">Import <input id="importFile" type="file" accept=".json" hidden></label>
-    <button class="btn danger" onclick="resetData()">Reset</button>
-  </div>
+<header class="top">
+<div class="brand"><div class="logo">€</div><div><h1>Money Planner Pro</h1><p>Income · expenses · installments · goals · future planning</p></div></div>
+<div class="actions">
+<button class="btn" onclick="exportJSON()">Export backup</button>
+<label class="btn">Import <input id="import" type="file" accept=".json" hidden></label>
+<button class="btn danger" onclick="resetAll()">Reset</button>
+</div>
 </header>
 
-<section class="grid">
-  <div class="card"><div class="metric-label">TOTAL INCOME</div><div id="totalIncome" class="metric green">0 lei</div><div class="small">Selected month</div></div>
-  <div class="card"><div class="metric-label">PLANNED EXPENSES</div><div id="totalExpense" class="metric red">0 lei</div><div class="small">Selected month</div></div>
-  <div class="card"><div class="metric-label">REMAINING</div><div id="remaining" class="metric">0 lei</div><div class="small">Income − expenses</div></div>
-  <div class="card"><div class="metric-label">EXPENSE RATE</div><div id="expenseRate" class="metric orange">0%</div><div class="small">Of monthly income</div></div>
-</section>
+<nav class="tabs">
+<button class="tab active" data-view="dashboard">Dashboard</button>
+<button class="tab" data-view="calendar">Calendar</button>
+<button class="tab" data-view="transactions">Transactions</button>
+<button class="tab" data-view="recurring">Recurring</button>
+<button class="tab" data-view="installments">Installments</button>
+<button class="tab" data-view="goals">Savings goals</button>
+</nav>
+
+<section id="dashboard" class="view active">
+<div class="cards">
+<div class="card"><div class="label">INCOME</div><div id="dIncome" class="big good">0 lei</div><div class="muted">Selected month</div></div>
+<div class="card"><div class="label">EXPENSES</div><div id="dExpense" class="big bad">0 lei</div><div class="muted">Selected month</div></div>
+<div class="card"><div class="label">REMAINING</div><div id="dRemain" class="big">0 lei</div><div class="muted">After planned expenses</div></div>
+<div class="card"><div class="label">SAVINGS</div><div id="dSavings" class="big good">0 lei</div><div class="muted">Income − expenses</div></div>
+<div class="card"><div class="label">EXPENSE RATE</div><div id="dRate" class="big warn">0%</div><div class="muted">Of monthly income</div></div>
+</div>
 
 <div class="layout">
-<main>
-  <div class="card">
-    <div class="section-title"><h2>Monthly overview</h2><div class="monthbar"><select id="monthSelect"></select></div></div>
-    <div id="balanceMessage" class="small"></div>
-    <div class="progress"><i id="progress"></i></div>
-    <div class="chart" id="chart"></div>
-  </div>
-
-  <div class="card" style="margin-top:18px">
-    <div class="section-title"><h2>Transactions & plans</h2><div class="small" id="entryCount"></div></div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Category</th><th>Status</th><th>Amount</th><th></th></tr></thead>
-        <tbody id="entries"></tbody>
-      </table>
-    </div>
-  </div>
-</main>
-
-<aside>
-  <div class="card">
-    <div class="section-title"><h2>Add income / expense</h2></div>
-    <form id="entryForm" class="form">
-      <div class="field"><label>Type</label><select id="type"><option value="expense">Expense</option><option value="income">Income</option></select></div>
-      <div class="field"><label>Amount (lei)</label><input id="amount" type="number" min="0" step="0.01" required placeholder="0"></div>
-      <div class="field"><label>Date</label><input id="date" type="date" required></div>
-      <div class="field"><label>Category</label><select id="category"></select></div>
-      <div class="field full"><label>Description</label><input id="description" required placeholder="e.g. Salary, rent, groceries..."></div>
-      <div class="field"><label>Status</label><select id="status"><option value="planned">Planned</option><option value="paid">Paid</option></select></div>
-      <div class="field"><label>Recurring</label><select id="recurring"><option value="no">No</option><option value="monthly">Monthly</option></select></div>
-      <div class="field full"><label>Notes</label><input id="notes" placeholder="Optional"></div>
-      <div class="field full form-actions"><button type="reset" class="btn">Clear</button><button class="btn primary">Add entry</button></div>
-    </form>
-  </div>
-
-  <div class="card" style="margin-top:18px">
-    <div class="section-title"><h2>Category totals</h2></div>
-    <div id="categories"></div>
-  </div>
-</aside>
+<div class="card"><div class="title"><h2>Monthly cash flow</h2><div class="monthnav"><button class="btn" onclick="changeMonth(-1)">‹</button><select id="dashMonth"></select><button class="btn" onclick="changeMonth(1)">›</button></div></div>
+<div id="cashflow" class="chart"></div></div>
+<div class="card"><div class="title"><h2>Upcoming</h2><span class="muted">Next 30 days</span></div><div id="upcoming" class="list"></div></div>
 </div>
 
-<div class="footer">Your data stays in this browser using localStorage. No account or server required.</div>
+<div class="grid2" style="margin-top:16px">
+<div class="card"><div class="title"><h2>Spending by category</h2></div><div id="catDash"></div></div>
+<div class="card"><div class="title"><h2>Savings goals</h2><span class="muted">Progress</span></div><div id="goalDash"></div></div>
 </div>
+</section>
 
+<section id="calendar" class="view">
+<div class="card"><div class="title"><h2>Monthly calendar</h2><div class="monthnav"><button class="btn" onclick="changeMonth(-1)">‹</button><select id="calMonth"></select><button class="btn" onclick="changeMonth(1)">›</button></div></div>
+<div class="calendar-wrap"><div id="calendarGrid" class="calendar"></div></div></div>
+</section>
+
+<section id="transactions" class="view">
+<div class="layout">
+<div class="card"><div class="title"><h2>All transactions</h2><input id="search" placeholder="Search..." style="max-width:220px"></div><div class="table-wrap"><table class="table"><thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Category</th><th>Status</th><th>Amount</th><th></th></tr></thead><tbody id="txTable"></tbody></table></div></div>
+<div class="card"><div class="title"><h2>Add transaction</h2></div><form id="txForm" class="form">
+<div class="field"><label>Type</label><select id="txType"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+<div class="field"><label>Amount (lei)</label><input id="txAmount" type="number" min="0" step=".01" required></div>
+<div class="field"><label>Date</label><input id="txDate" type="date" required></div>
+<div class="field"><label>Category</label><select id="txCategory"></select></div>
+<div class="field full"><label>Description</label><input id="txDesc" required placeholder="e.g. Salary, groceries, rent"></div>
+<div class="field"><label>Status</label><select id="txStatus"><option>planned</option><option>paid</option><option>overdue</option></select></div>
+<div class="field"><label>Recurring</label><select id="txRecurring"><option value="no">No</option><option value="monthly">Monthly</option></select></div>
+<div class="field full"><label>Notes</label><input id="txNotes" placeholder="Optional"></div>
+<div class="field full actions-row"><button type="reset" class="btn">Clear</button><button class="btn primary">Add transaction</button></div>
+</form></div>
+</div>
+</section>
+
+<section id="recurring" class="view">
+<div class="layout">
+<div class="card"><div class="title"><h2>Recurring items</h2><span class="muted">Automatically projected</span></div><div id="recurringList"></div></div>
+<div class="card"><div class="title"><h2>Add recurring item</h2></div><form id="recForm" class="form">
+<div class="field"><label>Type</label><select id="recType"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+<div class="field"><label>Amount</label><input id="recAmount" type="number" min="0" step=".01" required></div>
+<div class="field"><label>Start date</label><input id="recStart" type="date" required></div>
+<div class="field"><label>Category</label><select id="recCategory"></select></div>
+<div class="field full"><label>Description</label><input id="recDesc" required placeholder="e.g. Rent, salary"></div>
+<div class="field"><label>Day of month</label><input id="recDay" type="number" min="1" max="31" value="1"></div>
+<div class="field"><label>End date (optional)</label><input id="recEnd" type="date"></div>
+<div class="field full actions-row"><button class="btn primary">Add recurring</button></div>
+</form></div>
+</div>
+</section>
+
+<section id="installments" class="view">
+<div class="layout">
+<div class="card"><div class="title"><h2>Installment plans</h2><span class="muted">Monthly payment schedule</span></div><div id="installmentList"></div></div>
+<div class="card"><div class="title"><h2>Add installment</h2></div><form id="instForm" class="form">
+<div class="field full"><label>Purchase / creditor</label><input id="instName" required placeholder="e.g. Laptop"></div>
+<div class="field"><label>Total amount</label><input id="instTotal" type="number" min="0" step=".01" required></div>
+<div class="field"><label>Monthly payment</label><input id="instMonthly" type="number" min="0" step=".01" required></div>
+<div class="field"><label>Already paid</label><input id="instPaid" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label>Next payment</label><input id="instDate" type="date" required></div>
+<div class="field"><label>Remaining months</label><input id="instMonths" type="number" min="1" required></div>
+<div class="field"><label>Category</label><select id="instCategory"><option>Debt</option><option>Shopping</option><option>Home</option><option>Other</option></select></div>
+<div class="field full actions-row"><button class="btn primary">Add installment</button></div>
+</form></div>
+</div>
+</section>
+
+<section id="goals" class="view">
+<div class="layout">
+<div class="card"><div class="title"><h2>Savings goals</h2><span class="muted">Track your targets</span></div><div id="goalList"></div></div>
+<div class="card"><div class="title"><h2>Add savings goal</h2></div><form id="goalForm" class="form">
+<div class="field full"><label>Goal name</label><input id="goalName" required placeholder="e.g. Emergency fund"></div>
+<div class="field"><label>Target amount</label><input id="goalTarget" type="number" min="0" step=".01" required></div>
+<div class="field"><label>Current saved</label><input id="goalSaved" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label>Target date</label><input id="goalDate" type="date"></div>
+<div class="field"><label>Monthly contribution</label><input id="goalMonthly" type="number" min="0" step=".01" value="0"></div>
+<div class="field full actions-row"><button class="btn primary">Add goal</button></div>
+</form></div>
+</div>
+</section>
+
+<div id="toast" class="toast"></div>
+</div>
 <script>
-const KEY="money-planner-v1";
-const expenseCats=["Housing","Food","Transport","Utilities","Subscriptions","Shopping","Health","Entertainment","Debt","Other"];
-const incomeCats=["Salary","Business","Freelance","Gift","Other"];
-let data=JSON.parse(localStorage.getItem(KEY)||"[]");
+const KEY="money-planner-pro-v2";
+const EXP=["Housing","Food","Transport","Utilities","Subscriptions","Shopping","Health","Entertainment","Debt","Business","Other"];
+const INC=["Salary","Business","Freelance","Gift","Other"];
+let S=JSON.parse(localStorage.getItem(KEY)||'{"tx":[],"rec":[],"inst":[],"goals":[]}');
+let month=new Date().toISOString().slice(0,7);
 
-const $=id=>document.getElementById(id);
-function money(n){return new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+" lei"}
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
-function dateISO(d){return new Date(d).toISOString().slice(0,10)}
-function currentMonth(){return dateISO(new Date()).slice(0,7)}
-function monthLabel(m){return new Date(m+"-01T12:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"})}
-function populateMonths(){
-  const months=new Set([currentMonth()]);
-  data.forEach(x=>months.add(x.date.slice(0,7)));
-  for(let i=1;i<=11;i++){let d=new Date();d.setMonth(d.getMonth()+i);months.add(d.toISOString().slice(0,7))}
-  const arr=[...months].sort();
-  const old=$("monthSelect").value;
-  $("monthSelect").innerHTML=arr.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join("");
-  $("monthSelect").value=arr.includes(old)?old:currentMonth();
+const $=x=>document.getElementById(x), money=n=>new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+" lei";
+const iso=d=>new Date(d).toISOString().slice(0,10);
+function save(){localStorage.setItem(KEY,JSON.stringify(S));render();toast("Saved")}
+function toast(t){let e=$("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1300)}
+function monthName(m){return new Date(m+"-01T12:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"})}
+function addMonths(m,n){let d=new Date(m+"-01T12:00:00");d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,7)}
+function monthsList(){let a=[];for(let i=-12;i<=24;i++)a.push(addMonths(new Date().toISOString().slice(0,7),i));return a}
+function fillMonthSelects(){for(const id of ["dashMonth","calMonth"]){let el=$(id),old=el.value;el.innerHTML=monthsList().map(m=>`<option value="${m}">${monthName(m)}</option>`).join("");el.value=monthsList().includes(old)?old:month}}
+function changeMonth(n){month=addMonths(month,n);fillMonthSelects();$("dashMonth").value=month;$("calMonth").value=month;render()}
+function allProjected(){
+  const arr=[...S.tx];
+  S.rec.forEach(r=>{
+    for(let i=-1;i<=24;i++){let m=addMonths(r.start.slice(0,7),i);if(m<r.start.slice(0,7))continue;if(r.end&&m>r.end.slice(0,7))continue;
+      let day=Math.min(Number(r.day),new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate());
+      let date=m+"-"+String(day).padStart(2,"0");
+      if(date>=r.start && (!r.end||date<=r.end))arr.push({id:"rec-"+r.id+"-"+date,date,type:r.type,amount:r.amount,category:r.category,description:r.description+" (recurring)",status:"planned",projected:true});
+    }
+  });
+  return arr;
 }
-function categories(){
-  const cats=$("type").value==="income"?incomeCats:expenseCats;
-  $("category").innerHTML=cats.map(x=>`<option>${x}</option>`).join("");
+function catsFor(type){return (type==="income"?INC:EXP).map(x=>`<option>${x}</option>`).join("")}
+function setupCats(){ $("txCategory").innerHTML=catsFor($("txType").value);$("recCategory").innerHTML=catsFor($("recType").value)}
+function totals(m){let r=allProjected().filter(x=>x.date.startsWith(m));let inc=r.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0),exp=r.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0);return {r,inc,exp,rem:inc-exp}}
+function renderDashboard(){
+ let t=totals(month),rate=t.inc?t.exp/t.inc*100:0;$("dIncome").textContent=money(t.inc);$("dExpense").textContent=money(t.exp);$("dRemain").textContent=money(t.rem);$("dRemain").className="big "+(t.rem<0?"bad":"good");$("dSavings").textContent=money(t.rem);$("dRate").textContent=rate.toFixed(1)+"%";
+ let months=[...Array(7)].map((_,i)=>addMonths(month,i-3)), vals=months.map(m=>totals(m)),max=Math.max(1,...vals.flatMap(x=>[x.inc,x.exp]));
+ $("cashflow").innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="height:170px;width:100%;display:flex;align-items:end;gap:3px"><div title="Income ${money(v.inc)}" style="width:50%;height:${v.inc/max*100}%;background:#69c99f;border-radius:5px 5px 0 0"></div><div title="Expenses ${money(v.exp)}" style="width:50%;height:${v.exp/max*100}%;background:#ef899a;border-radius:5px 5px 0 0"></div></div><span class="muted">${new Date(months[i]+"-01T12:00:00").toLocaleDateString("en-GB",{month:"short"})}</span></div>`).join("");
+ let today=iso(new Date()),end=iso(new Date(Date.now()+30*86400000));let up=allProjected().filter(x=>x.date>=today&&x.date<=end).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
+ $("upcoming").innerHTML=up.length?up.map(x=>`<div class="row"><div class="row-main"><b>${esc(x.description)}</b><span>${x.date} · ${esc(x.category)}</span></div><b class="${x.type==="income"?"good":"bad"}">${x.type==="income"?"+":"−"}${money(x.amount)}</b></div>`).join(""):`<div class="empty">Nothing due in the next 30 days.</div>`;
+ let map={};t.r.filter(x=>x.type==="expense").forEach(x=>map[x.category]=(map[x.category]||0)+x.amount);let total=Object.values(map).reduce((a,b)=>a+b,0);
+ $("catDash").innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([c,v])=>`<div style="margin:10px 0"><div class="statline"><span>${esc(c)}</span><b>${money(v)}</b></div><div class="progress"><i style="width:${total?v/total*100:0}%"></i></div></div>`).join("")||`<div class="empty">No expenses.</div>`;
+ $("goalDash").innerHTML=S.goals.length?S.goals.slice(0,5).map(goalHTML).join(""):`<div class="empty">No savings goals.</div>`;
 }
-function render(){
-  populateMonths(); categories();
-  const m=$("monthSelect").value||currentMonth();
-  const rows=data.filter(x=>x.date.startsWith(m)).sort((a,b)=>a.date.localeCompare(b.date));
-  const income=rows.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0);
-  const expense=rows.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0);
-  const remain=income-expense, rate=income?expense/income*100:0;
-  $("totalIncome").textContent=money(income); $("totalExpense").textContent=money(expense);
-  $("remaining").textContent=money(remain); $("remaining").className="metric "+(remain<0?"red":"green");
-  $("expenseRate").textContent=rate.toFixed(1)+"%";
-  $("progress").style.width=Math.min(rate,100)+"%";
-  $("balanceMessage").textContent=remain>=0?`You have ${money(remain)} left after planned expenses.`:`You are ${money(Math.abs(remain))} over budget.`;
-  $("entryCount").textContent=rows.length+" entries";
-  $("entries").innerHTML=rows.length?rows.map(x=>`
-    <tr><td>${x.date}</td><td><span class="pill ${x.type==="income"?"paid":"planned"}">${x.type}</span></td>
-    <td>${esc(x.description)}</td><td>${esc(x.category)}</td><td><span class="pill ${x.status}">${x.status}</span></td>
-    <td class="amount ${x.type==="income"?"income":"expense"}">${x.type==="income"?"+":"−"}${money(x.amount)}</td>
-    <td><button class="btn" style="padding:5px 8px" onclick="removeEntry('${x.id}')">×</button></td></tr>`).join("")
-    :`<tr><td colspan="7"><div class="empty">No entries for this month.</div></td></tr>`;
-  renderCategories(rows); renderChart();
-}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderCategories(rows){
-  const map={}; rows.filter(x=>x.type==="expense").forEach(x=>map[x.category]=(map[x.category]||0)+x.amount);
-  const total=Object.values(map).reduce((a,b)=>a+b,0);
-  const items=Object.entries(map).sort((a,b)=>b[1]-a[1]);
-  $("categories").innerHTML=items.length?items.map(([c,v])=>`<div style="margin:11px 0"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${esc(c)}</span><b>${money(v)}</b></div><div class="progress"><i style="width:${total?v/total*100:0}%"></i></div></div>`).join(""):`<div class="empty">No expenses yet.</div>`;
-}
-function renderChart(){
-  const months=[...Array(6)].map((_,i)=>{let d=new Date();d.setMonth(d.getMonth()-5+i);return d.toISOString().slice(0,7)});
-  const vals=months.map(m=>{let r=data.filter(x=>x.date.startsWith(m));return [r.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0),r.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0)]});
-  const max=Math.max(1,...vals.flat());
-  $("chart").innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:0"><div class="bar-group"><div class="bar in" title="Income: ${money(v[0])}" style="height:${v[0]/max*100}%"></div><div class="bar out" title="Expenses: ${money(v[1])}" style="height:${v[1]/max*100}%"></div></div><div class="bar-label">${new Date(months[i]+"-01T12:00:00").toLocaleDateString("en-GB",{month:"short"})}</div></div>`).join("");
-}
-$("type").addEventListener("change",categories);
-$("monthSelect").addEventListener("change",render);
-$("entryForm").addEventListener("submit",e=>{
- e.preventDefault();
- data.push({id:crypto.randomUUID(),type:$("type").value,amount:Number($("amount").value),date:$("date").value,
- category:$("category").value,description:$("description").value,status:$("status").value,recurring:$("recurring").value,notes:$("notes").value});
- save(); e.target.reset(); $("date").value=dateISO(new Date()); categories();
-});
-function removeEntry(id){if(confirm("Delete this entry?")){data=data.filter(x=>x.id!==id);save()}}
-function resetData(){if(confirm("Delete all saved data?")){data=[];save()}}
-function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="money-planner-backup.json";a.click();URL.revokeObjectURL(a.href)}
-$("importFile").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;try{const imported=JSON.parse(await f.text());if(!Array.isArray(imported))throw Error();data=imported;save()}catch{alert("Invalid backup file.")}e.target.value=""});
-$("date").value=dateISO(new Date()); render();
+function goalHTML(g){let p=g.target?Math.min(100,g.saved/g.target*100):0;return `<div style="margin:12px 0"><div class="statline"><span class="goal-name">${esc(g.name)}</span><b>${p.toFixed(0)}%</b></div><div class="progress"><i style="width:${p}%"></i></div><div class="statline"><span>${money(g.saved)} saved</span><span>${money(g.target)} target</span></div></div>`}
+function renderCalendar(){let y=+month.slice(0,4),mo=+month.slice(5,7)-1,first=new Date(y,mo,1),days=new Date(y,mo+1,0).getDate(),start=(first.getDay()+6)%7,grid=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x=>`<div class="dow">${x}</div>`).join("");let ev=allProjected().filter(x=>x.date.startsWith(month));for(let i=0;i<start;i++)grid+=`<div class="day"></div>`;for(let d=1;d<=days;d++){let date=`${month}-${String(d).padStart(2,"0")}`,items=ev.filter(x=>x.date===date),today=date===iso(new Date());grid+=`<div class="day ${today?"today":""}"><div class="daynum">${d}</div>${items.slice(0,4).map(x=>`<div class="event ${x.type==="income"?"inc":"exp"}" title="${esc(x.description)}">${x.type==="income"?"+":"−"} ${esc(x.description)} · ${money(x.amount)}</div>`).join("")}</div>`}$("calendarGrid").innerHTML=grid}
+function renderTx(){let q=($("search").value||"").toLowerCase(),r=allProjected().filter(x=>!x.projected&&(x.description+" "+x.category).toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date));$("txTable").innerHTML=r.length?r.map(x=>`<tr><td>${x.date}</td><td><span class="pill ${x.type}">${x.type}</span></td><td>${esc(x.description)}</td><td>${esc(x.category)}</td><td><span class="pill ${x.status}">${x.status}</span></td><td class="${x.type==="income"?"good":"bad"}"><b>${x.type==="income"?"+":"−"}${money(x.amount)}</b></td><td><button class="btn" onclick="delTx('${x.id}')">×</button></td></tr>`).join(""):`<tr><td colspan="7"><div class="empty">No transactions.</div></td></tr>`}
+function renderRecurring(){$("recurringList").innerHTML=S.rec.length?S.rec.map(r=>`<div class="row"><div class="row-main"><b>${esc(r.description)}</b><span>${r.day}th monthly · ${esc(r.category)} · starts ${r.start}</span></div><div><b>${money(r.amount)}</b><br><button class="btn" onclick="delRec('${r.id}')">Delete</button></div></div>`).join(""):`<div class="empty">No recurring items.</div>`}
+function renderInstallments(){$("installmentList").innerHTML=S.inst.length?S.inst.map(i=>{let remain=Math.max(0,i.total-i.paid),months=Math.ceil(remain/i.monthly);return `<div class="row"><div class="row-main"><b>${esc(i.name)}</b><span>${esc(i.category)} · next ${i.date} · ${months} payments remaining</span><div class="progress" style="margin-top:7px"><i style="width:${i.total?i.paid/i.total*100:0}%"></i></div></div><div><b>${money(i.monthly)}/mo</b><br><button class="btn" onclick="delInst('${i.id}')">Delete</button></div></div>`}).join(""):`<div class="empty">No installments.</div>`}
+function renderGoals(){$("goalList").innerHTML=S.goals.length?S.goals.map(g=>`<div class="row"><div style="flex:1"><div class="statline"><span class="goal-name">${esc(g.name)}</span><b>${money(g.saved)} / ${money(g.target)}</b></div><div class="progress"><i style="width:${g.target?Math.min(100,g.saved/g.target*100):0}%"></i></div><div class="statline"><span>${g.date?"Target "+g.date:"No target date"}</span><span>${g.monthly?money(g.monthly)+"/mo":""}</span></div></div><button class="btn" onclick="delGoal('${g.id}')">Delete</button></div>`).join(""):`<div class="empty">No goals.</div>`}
+function render(){fillMonthSelects();$("dashMonth").value=month;$("calMonth").value=month;renderDashboard();renderCalendar();renderTx();renderRecurring();renderInstallments();renderGoals();setupCats()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.view).classList.add("active")});
+$("dashMonth").onchange=e=>{month=e.target.value;render()};$("calMonth").onchange=e=>{month=e.target.value;render()};$("search").oninput=renderTx;
+$("txType").onchange=setupCats;$("recType").onchange=setupCats;
+$("txForm").onsubmit=e=>{e.preventDefault();S.tx.push({id:crypto.randomUUID(),type:$("txType").value,amount:+$("txAmount").value,date:$("txDate").value,category:$("txCategory").value,description:$("txDesc").value,status:$("txStatus").value,notes:$("txNotes").value});save();e.target.reset();$("txDate").value=iso(new Date());setupCats()};
+$("recForm").onsubmit=e=>{e.preventDefault();S.rec.push({id:crypto.randomUUID(),type:$("recType").value,amount:+$("recAmount").value,start:$("recStart").value,end:$("recEnd").value,category:$("recCategory").value,description:$("recDesc").value,day:+$("recDay").value});save();e.target.reset();setupCats()};
+$("instForm").onsubmit=e=>{e.preventDefault();S.inst.push({id:crypto.randomUUID(),name:$("instName").value,total:+$("instTotal").value,monthly:+$("instMonthly").value,paid:+$("instPaid").value,date:$("instDate").value,months:+$("instMonths").value,category:$("instCategory").value});save();e.target.reset()};
+$("goalForm").onsubmit=e=>{e.preventDefault();S.goals.push({id:crypto.randomUUID(),name:$("goalName").value,target:+$("goalTarget").value,saved:+$("goalSaved").value,date:$("goalDate").value,monthly:+$("goalMonthly").value});save();e.target.reset()};
+function delTx(id){if(confirm("Delete transaction?")){S.tx=S.tx.filter(x=>x.id!==id);save()}}function delRec(id){if(confirm("Delete recurring item?")){S.rec=S.rec.filter(x=>x.id!==id);save()}}function delInst(id){if(confirm("Delete installment?")){S.inst=S.inst.filter(x=>x.id!==id);save()}}function delGoal(id){if(confirm("Delete goal?")){S.goals=S.goals.filter(x=>x.id!==id);save()}}
+function exportJSON(){let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="money-planner-backup.json";a.click();URL.revokeObjectURL(a.href)}
+$("import").onchange=async e=>{try{let x=JSON.parse(await e.target.files[0].text());if(!x.tx||!x.rec||!x.inst||!x.goals)throw 0;S=x;save();toast("Backup imported")}catch{alert("Invalid backup file")}e.target.value=""}
+function resetAll(){if(confirm("Delete ALL planner data?")){S={tx:[],rec:[],inst:[],goals:[]};save()}}
+$("txDate").value=iso(new Date());$("recStart").value=iso(new Date());$("instDate").value=iso(new Date());render();
 </script>
 </body>
 </html>
