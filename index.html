@@ -7,15 +7,17 @@
 <style>
 :root{
   --bg:#f5f6fa;--panel:#fff;--panel2:#fafbff;--text:#171922;--muted:#737783;
-  --line:#e7e8ee;--accent:#6d5dfc;--accent2:#9a90ff;--good:#159a68;--goodbg:#e8f8f1;
-  --bad:#d94d62;--badbg:#fdebed;--warn:#d58a27;--warnbg:#fff2dc;
-  --shadow:0 12px 35px #2222;--inputbg:#fff;
+  --line:#e7e8ee;--accent:#6d5dfc;--accent2:#9a90ff;--accent-bg:rgba(109,93,252,.12);
+  --good:#159a68;--goodbg:#e8f8f1;--bad:#d94d62;--badbg:#fdebed;
+  --warn:#d58a27;--warnbg:#fff2dc;
+  --shadow:0 12px 35px rgba(34,34,34,.13);--inputbg:#fff;
 }
 [data-theme="dark"]{
   --bg:#0f1117;--panel:#181b24;--panel2:#1e222d;--text:#e8eaf0;--muted:#8b90a0;
-  --line:#2a2f3d;--accent:#8b7dff;--accent2:#a89fff;--good:#3ddb9a;--goodbg:#143528;
-  --bad:#ff6b7f;--badbg:#3a1920;--warn:#ffb347;--warnbg:#3a2a12;
-  --shadow:0 12px 35px #0008;--inputbg:#1e222d;
+  --line:#2a2f3d;--accent:#8b7dff;--accent2:#a89fff;--accent-bg:rgba(139,125,255,.18);
+  --good:#3ddb9a;--goodbg:#143528;--bad:#ff6b7f;--badbg:#3a1920;
+  --warn:#ffb347;--warnbg:#3a2a12;
+  --shadow:0 12px 35px rgba(0,0,0,.5);--inputbg:#1e222d;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;transition:background .2s,color .2s}
@@ -38,7 +40,7 @@ button{cursor:pointer}
 .tabs{display:flex;gap:5px;overflow:auto;background:var(--panel);border:1px solid var(--line);padding:5px;border-radius:13px;margin-bottom:18px}
 .tab{border:0;background:transparent;padding:10px 15px;border-radius:9px;font-weight:700;color:var(--muted);white-space:nowrap;transition:.15s}
 .tab:hover{color:var(--text)}
-.tab.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.tab.active{background:var(--accent-bg);color:var(--accent)}
 .view{display:none}
 .view.active{display:block}
 .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}
@@ -57,12 +59,12 @@ button{cursor:pointer}
 .full{grid-column:1/-1}
 label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase}
 input,select,textarea{width:100%;border:1px solid var(--line);background:var(--inputbg);border-radius:9px;padding:10px;outline:none;transition:.15s}
-input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
 .actions-row{display:flex;justify-content:flex-end;gap:8px}
 .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}
 .table{width:100%;border-collapse:collapse;min-width:760px}
 .table th,.table td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
-.table th{background:var(--panel2);color:var(--muted);font-size:10px;text-transform:uppercase;cursor:pointer;user-select:none;position:sticky;top:0}
+.table th{background:var(--panel2);color:var(--muted);font-size:10px;text-transform:uppercase;cursor:pointer;user-select:none}
 .table th:hover{color:var(--accent)}
 .table tr:last-child td{border:0}
 .table tbody tr:hover{background:var(--panel2)}
@@ -70,7 +72,6 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-m
 .pill.income,.pill.paid,.pill.active{background:var(--goodbg);color:var(--good)}
 .pill.expense,.pill.overdue{background:var(--badbg);color:var(--bad)}
 .pill.planned,.pill.upcoming{background:var(--warnbg);color:var(--warn)}
-.pill.credit{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .list{display:flex;flex-direction:column;gap:8px}
 .row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);align-items:center}
@@ -78,7 +79,7 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-m
 .row-main{min-width:0;flex:1}
 .row-main b{display:block;font-size:12px}
 .row-main span{font-size:10px;color:var(--muted)}
-.progress{height:9px;background:var(--line);border-radius:99px;overflow:hidden;position:relative}
+.progress{height:9px;background:var(--line);border-radius:99px;overflow:hidden}
 .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:inherit;transition:width .4s}
 .monthnav{display:flex;gap:7px;align-items:center}
 .monthnav button{padding:7px 10px}
@@ -96,26 +97,27 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-m
 .goal-name{font-size:12px;font-weight:800}
 .statline{display:flex;justify-content:space-between;font-size:11px;margin:8px 0;gap:8px}
 .empty{text-align:center;color:var(--muted);padding:25px;font-size:12px}
-.toast{position:fixed;right:20px;bottom:20px;padding:12px 16px;border-radius:10px;font-size:12px;font-weight:600;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:9999;box-shadow:0 8px 25px #0004}
+.toast{position:fixed;right:20px;bottom:20px;padding:12px 16px;border-radius:10px;font-size:12px;font-weight:600;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:9999;box-shadow:0 8px 25px rgba(0,0,0,.27)}
 .toast.show{opacity:1;transform:none}
 .toast.success{background:var(--good);color:#fff}
 .toast.error{background:var(--bad);color:#fff}
 .toast.info{background:var(--text);color:var(--panel)}
-.modal-bg{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:9998;padding:20px;backdrop-filter:blur(2px)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9998;padding:20px}
 .modal-bg.show{display:flex}
-.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:420px;width:100%;box-shadow:0 20px 60px #0006}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .modal h3{margin:0 0 8px;font-size:16px}
 .modal p{margin:0 0 18px;color:var(--muted);font-size:13px}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px}
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .filter-bar input,.filter-bar select{width:auto;min-width:130px;padding:7px 9px;font-size:12px}
 .filter-bar input[type=search]{flex:1;min-width:180px}
-.badge{display:inline-block;background:var(--accent);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px;margin-left:6px}
+#startupError{background:#d94d62;color:#fff;padding:12px 16px;font:14px/1.4 system-ui;position:sticky;top:0;z-index:99999;display:none;white-space:pre-wrap}
 @media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
 @media(max-width:650px){.app{padding:12px}.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}.form{grid-template-columns:1fr}.full{grid-column:auto}.calendar{min-width:700px}.calendar-wrap{overflow:auto}.day{min-height:90px}.brand h1{font-size:20px}}
 </style>
 </head>
 <body>
+<div id="startupError"></div>
 <div class="app">
 <header class="top">
   <div class="brand">
@@ -303,158 +305,239 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-m
 </div>
 </div>
 <script>
-const KEY="money-planner-pro-v2";
-const THEME_KEY="money-planner-theme";
-const EXP=["Housing","Food","Transport","Utilities","Subscriptions","Shopping","Health","Entertainment","Debt","Business","Other"];
-const INC=["Salary","Business","Freelance","Gift","Other"];
-const uid=()=>crypto.randomUUID?crypto.randomUUID():"id-"+Date.now()+"-"+Math.random().toString(36).slice(2);
-let S=JSON.parse(localStorage.getItem(KEY)||'{"tx":[],"rec":[],"inst":[],"goals":[]}');
-let month=new Date().toISOString().slice(0,7);
-let sortKey="date",sortDir=-1;
+(function(){
+"use strict";
 
-const $=x=>document.getElementById(x);
-const money=n=>new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+" lei";
-const iso=d=>new Date(d).toISOString().slice(0,10);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+// ---------- Safe helpers ----------
+function showStartupError(msg){
+  var el=document.getElementById("startupError");
+  if(el){el.style.display="block";el.textContent="⚠ Startup error: "+msg+"\nOpen DevTools console (F12) for full details.";}
+  if(window.console&&console.error)console.error("Startup error:",msg);
+}
+window.addEventListener("error",function(e){showStartupError(e.message||"Unknown error");});
 
-function save(){localStorage.setItem(KEY,JSON.stringify(S));render()}
-function toast(t,type="info"){let e=$("toast");e.textContent=t;e.className="toast show "+type;setTimeout(()=>e.classList.remove("show"),1800)}
+// Safe UUID (works on file:// and insecure contexts)
+function uid(){
+  try{
+    if(typeof crypto!=="undefined"&&crypto){
+      if(typeof crypto.randomUUID==="function")return crypto.randomUUID();
+      if(typeof crypto.getRandomValues==="function"){
+        var a=new Uint8Array(16);crypto.getRandomValues(a);
+        return Array.prototype.map.call(a,function(b){return ("0"+b.toString(16)).slice(-2)}).join("");
+      }
+    }
+  }catch(e){}
+  return "id-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10);
+}
+
+var KEY="money-planner-pro-v2";
+var THEME_KEY="money-planner-theme";
+var EXP=["Housing","Food","Transport","Utilities","Subscriptions","Shopping","Health","Entertainment","Debt","Business","Other"];
+var INC=["Salary","Business","Freelance","Gift","Other"];
+
+var S;
+try{
+  S=JSON.parse(localStorage.getItem(KEY)||'{"tx":[],"rec":[],"inst":[],"goals":[]}');
+  if(!S||typeof S!=="object")S={tx:[],rec:[],inst:[],goals:[]};
+  if(!Array.isArray(S.tx))S.tx=[];
+  if(!Array.isArray(S.rec))S.rec=[];
+  if(!Array.isArray(S.inst))S.inst=[];
+  if(!Array.isArray(S.goals))S.goals=[];
+}catch(e){S={tx:[],rec:[],inst:[],goals:[]}}
+
+var month=new Date().toISOString().slice(0,7);
+var sortKey="date",sortDir=-1;
+
+function $(x){return document.getElementById(x)}
+function money(n){return new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)+" lei"}
+function iso(d){try{return new Date(d).toISOString().slice(0,10)}catch(e){return new Date().toISOString().slice(0,10)}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S))}
+  catch(e){toast("Could not save: "+e.message,"error");return}
+  render();
+}
+function toast(t,type){
+  var e=$("toast");if(!e)return;
+  e.textContent=t;e.className="toast show "+(type||"info");
+  clearTimeout(toast._t);
+  toast._t=setTimeout(function(){e.classList.remove("show")},1800);
+}
 function monthName(m){return new Date(m+"-01T12:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"})}
-function addMonths(m,n){let d=new Date(m+"-01T12:00:00");d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,7)}
-function monthsList(){let a=[];for(let i=-12;i<=24;i++)a.push(addMonths(new Date().toISOString().slice(0,7),i));return a}
-function fillMonthSelects(){for(const id of ["dashMonth","calMonth"]){let el=$(id),old=el.value;el.innerHTML=monthsList().map(m=>`<option value="${m}">${monthName(m)}</option>`).join("");el.value=monthsList().includes(old)?old:month}}
-function changeMonth(n){month=addMonths(month,n);fillMonthSelects();$("dashMonth").value=month;$("calMonth").value=month;render()}
+function addMonths(m,n){var d=new Date(m+"-01T12:00:00");d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,7)}
+function monthsList(){var a=[];var now=new Date().toISOString().slice(0,7);for(var i=-12;i<=24;i++)a.push(addMonths(now,i));return a}
+function fillMonthSelects(){
+  var list=monthsList(),opts=list.map(function(m){return '<option value="'+m+'">'+monthName(m)+'</option>'}).join("");
+  ["dashMonth","calMonth"].forEach(function(id){
+    var el=$(id);if(!el)return;
+    var old=el.value;
+    el.innerHTML=opts;
+    el.value=list.indexOf(old)>=0?old:month;
+  });
+}
+function changeMonth(n){month=addMonths(month,n);fillMonthSelects();if($("dashMonth"))$("dashMonth").value=month;if($("calMonth"))$("calMonth").value=month;render()}
 
 function allProjected(){
-  const arr=[...S.tx];
-  S.rec.forEach(r=>{
-    const startM=r.start.slice(0,7);
-    for(let i=0;i<=36;i++){
-      let m=addMonths(startM,i);
+  var arr=S.tx.slice();
+  S.rec.forEach(function(r){
+    var startM=r.start.slice(0,7);
+    for(var i=0;i<=36;i++){
+      var m=addMonths(startM,i);
       if(m<startM)continue;
       if(r.end&&m>r.end.slice(0,7))continue;
-      let day=Math.min(Number(r.day)||1,new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate());
-      let date=m+"-"+String(day).padStart(2,"0");
+      var day=Math.min(Number(r.day)||1,new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate());
+      var date=m+"-"+String(day).padStart(2,"0");
       if(date<r.start)continue;
       if(r.end&&date>r.end)continue;
-      arr.push({id:"rec-"+r.id+"-"+date,date,type:r.type,amount:r.amount,category:r.category,description:r.description+" (recurring)",status:"planned",projected:true});
+      arr.push({id:"rec-"+r.id+"-"+date,date:date,type:r.type,amount:r.amount,category:r.category,description:r.description+" (recurring)",status:"planned",projected:true});
     }
   });
   return arr;
 }
-function catsFor(type){return (type==="income"?INC:EXP).map(x=>`<option>${x}</option>`).join("")}
-function setupCats(){$("txCategory").innerHTML=catsFor($("txType").value);$("recCategory").innerHTML=catsFor($("recType").value)}
-function totals(m){let r=allProjected().filter(x=>x.date.startsWith(m));let inc=r.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0),exp=r.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0);return {r,inc,exp,rem:inc-exp}}
+function catsFor(type){return (type==="income"?INC:EXP).map(function(x){return "<option>"+x+"</option>"}).join("")}
+function setupCats(){
+  if($("txCategory")&&$("txType"))$("txCategory").innerHTML=catsFor($("txType").value);
+  if($("recCategory")&&$("recType"))$("recCategory").innerHTML=catsFor($("recType").value);
+}
+function totals(m){
+  var r=allProjected().filter(function(x){return x.date.startsWith(m)});
+  var inc=r.filter(function(x){return x.type==="income"}).reduce(function(s,x){return s+x.amount},0);
+  var exp=r.filter(function(x){return x.type==="expense"}).reduce(function(s,x){return s+x.amount},0);
+  return {r:r,inc:inc,exp:exp,rem:inc-exp};
+}
 
 function renderDashboard(){
-  let t=totals(month),rate=t.inc?t.exp/t.inc*100:0;
-  $("dIncome").textContent=money(t.inc);
-  $("dExpense").textContent=money(t.exp);
-  $("dRemain").textContent=money(t.rem);
-  $("dRemain").className="big "+(t.rem<0?"bad":"good");
-  $("dSavings").textContent=money(t.rem);
-  $("dRate").textContent=rate.toFixed(1)+"%";
-  $("dRate").className="big "+(rate>90?"bad":rate>70?"warn":"good");
+  var t=totals(month),rate=t.inc?t.exp/t.inc*100:0;
+  if($("dIncome"))$("dIncome").textContent=money(t.inc);
+  if($("dExpense"))$("dExpense").textContent=money(t.exp);
+  if($("dRemain")){$("dRemain").textContent=money(t.rem);$("dRemain").className="big "+(t.rem<0?"bad":"good")}
+  if($("dSavings"))$("dSavings").textContent=money(t.rem);
+  if($("dRate")){$("dRate").textContent=rate.toFixed(1)+"%";$("dRate").className="big "+(rate>90?"bad":rate>70?"warn":"good")}
 
-  let months=[...Array(7)].map((_,i)=>addMonths(month,i-3)),vals=months.map(m=>totals(m)),max=Math.max(1,...vals.flatMap(x=>[x.inc,x.exp]));
-  $("cashflow").innerHTML=`<div style="display:flex;gap:6px;height:190px;align-items:end;padding:10px 0">${
-    vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div style="height:170px;width:100%;display:flex;align-items:end;gap:3px">
-        <div title="Income ${money(v.inc)}" style="width:50%;height:${v.inc/max*100}%;background:var(--good);border-radius:5px 5px 0 0;transition:height .3s"></div>
-        <div title="Expenses ${money(v.exp)}" style="width:50%;height:${v.exp/max*100}%;background:var(--bad);border-radius:5px 5px 0 0;transition:height .3s"></div>
-      </div>
-      <span class="muted" style="font-size:10px">${new Date(months[i]+"-01T12:00:00").toLocaleDateString("en-GB",{month:"short"})}</span>
-    </div>`).join("")
-  }</div>`;
+  var months=[],vals=[];
+  for(var i=-3;i<=3;i++){var m=addMonths(month,i);months.push(m);vals.push(totals(m))}
+  var max=1;vals.forEach(function(v){max=Math.max(max,v.inc,v.exp)});
+  if($("cashflow"))$("cashflow").innerHTML='<div style="display:flex;gap:6px;height:190px;align-items:end;padding:10px 0">'+
+    vals.map(function(v,idx){
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'+
+        '<div style="height:170px;width:100%;display:flex;align-items:end;gap:3px">'+
+          '<div title="Income '+money(v.inc)+'" style="width:50%;height:'+(v.inc/max*100)+'%;background:var(--good);border-radius:5px 5px 0 0"></div>'+
+          '<div title="Expenses '+money(v.exp)+'" style="width:50%;height:'+(v.exp/max*100)+'%;background:var(--bad);border-radius:5px 5px 0 0"></div>'+
+        '</div>'+
+        '<span class="muted" style="font-size:10px">'+new Date(months[idx]+"-01T12:00:00").toLocaleDateString("en-GB",{month:"short"})+'</span>'+
+      '</div>';
+    }).join("")+'</div>';
 
-  let today=iso(new Date()),end=iso(new Date(Date.now()+30*86400000));
-  let up=allProjected().filter(x=>x.date>=today&&x.date<=end).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
-  $("upcoming").innerHTML=up.length?up.map(x=>`<div class="row"><div class="row-main"><b>${esc(x.description)}</b><span>${x.date} · ${esc(x.category)}</span></div><b class="${x.type==="income"?"good":"bad"}">${x.type==="income"?"+":"−"}${money(x.amount)}</b></div>`).join(""):`<div class="empty">Nothing due in the next 30 days.</div>`;
+  var today=iso(new Date()),end=iso(new Date(Date.now()+30*86400000));
+  var up=allProjected().filter(function(x){return x.date>=today&&x.date<=end}).sort(function(a,b){return a.date.localeCompare(b.date)}).slice(0,8);
+  if($("upcoming"))$("upcoming").innerHTML=up.length?up.map(function(x){
+    return '<div class="row"><div class="row-main"><b>'+esc(x.description)+'</b><span>'+x.date+' · '+esc(x.category)+'</span></div><b class="'+(x.type==="income"?"good":"bad")+'">'+(x.type==="income"?"+":"−")+money(x.amount)+'</b></div>';
+  }).join(""):'<div class="empty">Nothing due in the next 30 days.</div>';
 
-  let map={};t.r.filter(x=>x.type==="expense").forEach(x=>map[x.category]=(map[x.category]||0)+x.amount);
-  let total=Object.values(map).reduce((a,b)=>a+b,0);
-  $("catDash").innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([c,v])=>`<div style="margin:10px 0"><div class="statline"><span>${esc(c)}</span><b>${money(v)}</b></div><div class="progress"><i style="width:${total?v/total*100:0}%"></i></div></div>`).join("")||`<div class="empty">No expenses this month.</div>`;
+  var map={};t.r.filter(function(x){return x.type==="expense"}).forEach(function(x){map[x.category]=(map[x.category]||0)+x.amount});
+  var total=Object.keys(map).reduce(function(a,k){return a+map[k]},0);
+  if($("catDash"))$("catDash").innerHTML=Object.keys(map).length?Object.keys(map).sort(function(a,b){return map[b]-map[a]}).slice(0,8).map(function(c){
+    return '<div style="margin:10px 0"><div class="statline"><span>'+esc(c)+'</span><b>'+money(map[c])+'</b></div><div class="progress"><i style="width:'+(total?map[c]/total*100:0)+'%"></i></div></div>';
+  }).join(""):'<div class="empty">No expenses this month.</div>';
 
-  $("goalDash").innerHTML=S.goals.length?S.goals.slice(0,5).map(goalHTML).join(""):`<div class="empty">No savings goals yet.</div>`;
+  if($("goalDash"))$("goalDash").innerHTML=S.goals.length?S.goals.slice(0,5).map(goalHTML).join(""):'<div class="empty">No savings goals yet.</div>';
 }
-function goalHTML(g){let p=g.target?Math.min(100,g.saved/g.target*100):0;return `<div style="margin:12px 0"><div class="statline"><span class="goal-name">${esc(g.name)}</span><b>${p.toFixed(0)}%</b></div><div class="progress"><i style="width:${p}%"></i></div><div class="statline"><span>${money(g.saved)} saved</span><span>${money(g.target)} target</span></div></div>`}
+function goalHTML(g){
+  var p=g.target?Math.min(100,g.saved/g.target*100):0;
+  return '<div style="margin:12px 0"><div class="statline"><span class="goal-name">'+esc(g.name)+'</span><b>'+p.toFixed(0)+'%</b></div><div class="progress"><i style="width:'+p+'%"></i></div><div class="statline"><span>'+money(g.saved)+' saved</span><span>'+money(g.target)+' target</span></div></div>';
+}
 
 function renderCalendar(){
-  let y=+month.slice(0,4),mo=+month.slice(5,7)-1,first=new Date(y,mo,1),days=new Date(y,mo+1,0).getDate(),start=(first.getDay()+6)%7;
-  let grid=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x=>`<div class="dow">${x}</div>`).join("");
-  let ev=allProjected().filter(x=>x.date.startsWith(month));
-  for(let i=0;i<start;i++)grid+=`<div class="day"></div>`;
-  for(let d=1;d<=days;d++){
-    let date=`${month}-${String(d).padStart(2,"0")}`,items=ev.filter(x=>x.date===date),today=date===iso(new Date());
-    let shown=items.slice(0,3),more=items.length-shown.length;
-    grid+=`<div class="day ${today?"today":""}"><div class="daynum">${d}</div>${shown.map(x=>`<div class="event ${x.type==="income"?"inc":"exp"}" title="${esc(x.description)} · ${money(x.amount)}">${x.type==="income"?"+":"−"} ${esc(x.description)}</div>`).join("")}${more>0?`<div class="more">+${more} more</div>`:""}</div>`;
+  var y=+month.slice(0,4),mo=+month.slice(5,7)-1,first=new Date(y,mo,1),days=new Date(y,mo+1,0).getDate(),start=(first.getDay()+6)%7;
+  var grid=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(function(x){return '<div class="dow">'+x+'</div>'}).join("");
+  var ev=allProjected().filter(function(x){return x.date.startsWith(month)});
+  for(var i=0;i<start;i++)grid+='<div class="day"></div>';
+  var todayStr=iso(new Date());
+  for(var d=1;d<=days;d++){
+    var date=month+"-"+String(d).padStart(2,"0");
+    var items=ev.filter(function(x){return x.date===date});
+    var shown=items.slice(0,3),more=items.length-shown.length;
+    grid+='<div class="day '+(date===todayStr?"today":"")+'"><div class="daynum">'+d+'</div>'+
+      shown.map(function(x){return '<div class="event '+(x.type==="income"?"inc":"exp")+'" title="'+esc(x.description)+' · '+money(x.amount)+'">'+(x.type==="income"?"+":"−")+' '+esc(x.description)+'</div>'}).join("")+
+      (more>0?'<div class="more">+'+more+' more</div>':"")+'</div>';
   }
-  $("calendarGrid").innerHTML=grid;
+  if($("calendarGrid"))$("calendarGrid").innerHTML=grid;
 }
 
 function renderTx(){
-  let q=($("search").value||"").toLowerCase();
-  let ft=$("filterType").value,fs=$("filterStatus").value;
-  let r=allProjected().filter(x=>!x.projected)
-    .filter(x=>(x.description+" "+x.category).toLowerCase().includes(q))
-    .filter(x=>!ft||x.type===ft)
-    .filter(x=>!fs||x.status===fs);
-  r.sort((a,b)=>{
-    let va=a[sortKey],vb=b[sortKey];
+  if(!$("txTable"))return;
+  var q=($("search").value||"").toLowerCase();
+  var ft=$("filterType").value,fs=$("filterStatus").value;
+  var r=allProjected().filter(function(x){return !x.projected})
+    .filter(function(x){return (String(x.description)+" "+String(x.category)).toLowerCase().indexOf(q)>=0})
+    .filter(function(x){return !ft||x.type===ft})
+    .filter(function(x){return !fs||x.status===fs});
+  r.sort(function(a,b){
+    var va=a[sortKey],vb=b[sortKey];
     if(sortKey==="amount"){va=+va;vb=+vb}
     return (va<vb?-1:va>vb?1:0)*sortDir;
   });
-  $("txTable").innerHTML=r.length?r.map(x=>`<tr>
-    <td>${x.date}</td>
-    <td><span class="pill ${x.type}">${x.type}</span></td>
-    <td>${esc(x.description)}${x.notes?` <span class="muted">(${esc(x.notes)})</span>`:""}</td>
-    <td>${esc(x.category)}</td>
-    <td><span class="pill ${x.status}">${x.status}</span></td>
-    <td class="${x.type==="income"?"good":"bad"}"><b>${x.type==="income"?"+":"−"}${money(x.amount)}</b></td>
-    <td style="white-space:nowrap">
-      <button class="btn icon" onclick="editTx('${x.id}')" title="Edit">✎</button>
-      <button class="btn icon danger" onclick="delTx('${x.id}')" title="Delete">×</button>
-    </td>
-  </tr>`).join(""):`<tr><td colspan="7"><div class="empty">No transactions match your filters.</div></td></tr>`;
+  $("txTable").innerHTML=r.length?r.map(function(x){
+    return '<tr><td>'+x.date+'</td>'+
+      '<td><span class="pill '+x.type+'">'+x.type+'</span></td>'+
+      '<td>'+esc(x.description)+(x.notes?' <span class="muted">('+esc(x.notes)+')</span>':"")+'</td>'+
+      '<td>'+esc(x.category)+'</td>'+
+      '<td><span class="pill '+x.status+'">'+x.status+'</span></td>'+
+      '<td class="'+(x.type==="income"?"good":"bad")+'"><b>'+(x.type==="income"?"+":"−")+money(x.amount)+'</b></td>'+
+      '<td style="white-space:nowrap"><button class="btn icon" onclick="MPP.editTx(\''+x.id+'\')" title="Edit">✎</button><button class="btn icon danger" onclick="MPP.delTx(\''+x.id+'\')" title="Delete">×</button></td></tr>';
+  }).join(""):'<tr><td colspan="7"><div class="empty">No transactions match your filters.</div></td></tr>';
 }
 
-function renderRecurring(){
-  $("recurringList").innerHTML=S.rec.length?S.rec.map(r=>{
-    let next=nextOccurrence(r);
-    return `<div class="row"><div class="row-main"><b>${esc(r.description)}</b><span>${r.day}th monthly · ${esc(r.category)} · starts ${r.start}${r.end?" · ends "+r.end:""}${next?" · next "+next:""}</span></div><div style="display:flex;gap:5px;align-items:center"><b>${money(r.amount)}</b><button class="btn icon" onclick="editRec('${r.id}')" title="Edit">✎</button><button class="btn icon danger" onclick="delRec('${r.id}')" title="Delete">×</button></div></div>`;
-  }).join(""):`<div class="empty">No recurring items.</div>`;
-}
 function nextOccurrence(r){
-  let today=iso(new Date());
-  for(let i=0;i<=12;i++){
-    let m=addMonths(today.slice(0,7),i);
-    let day=Math.min(Number(r.day)||1,new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate());
-    let date=m+"-"+String(day).padStart(2,"0");
+  var today=iso(new Date());
+  for(var i=0;i<=12;i++){
+    var m=addMonths(today.slice(0,7),i);
+    var day=Math.min(Number(r.day)||1,new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate());
+    var date=m+"-"+String(day).padStart(2,"0");
     if(date>=today&&date>=r.start&&(!r.end||date<=r.end))return date;
   }
   return null;
 }
 
+function renderRecurring(){
+  if(!$("recurringList"))return;
+  $("recurringList").innerHTML=S.rec.length?S.rec.map(function(r){
+    var next=nextOccurrence(r);
+    return '<div class="row"><div class="row-main"><b>'+esc(r.description)+'</b><span>'+r.day+'th monthly · '+esc(r.category)+' · starts '+r.start+(r.end?" · ends "+r.end:"")+(next?" · next "+next:"")+'</span></div><div style="display:flex;gap:5px;align-items:center"><b>'+money(r.amount)+'</b><button class="btn icon" onclick="MPP.editRec(\''+r.id+'\')" title="Edit">✎</button><button class="btn icon danger" onclick="MPP.delRec(\''+r.id+'\')" title="Delete">×</button></div></div>';
+  }).join(""):'<div class="empty">No recurring items.</div>';
+}
+
 function renderInstallments(){
-  $("installmentList").innerHTML=S.inst.length?S.inst.map(i=>{
-    let remain=Math.max(0,i.total-i.paid),months=i.monthly>0?Math.ceil(remain/i.monthly):0;
-    let pct=i.total?Math.min(100,i.paid/i.total*100):0;
-    return `<div class="row"><div style="flex:1"><b>${esc(i.name)}</b><span class="muted" style="font-size:10px;display:block">${esc(i.category)} · next ${i.date} · ${months} payment${months===1?"":"s"} left · ${money(remain)} remaining</span><div class="progress" style="margin-top:7px"><i style="width:${pct}%"></i></div></div><div style="display:flex;gap:5px;align-items:center"><b>${money(i.monthly)}/mo</b><button class="btn icon" onclick="editInst('${i.id}')" title="Edit">✎</button><button class="btn icon danger" onclick="delInst('${i.id}')" title="Delete">×</button></div></div>`;
-  }).join(""):`<div class="empty">No installments.</div>`;
+  if(!$("installmentList"))return;
+  $("installmentList").innerHTML=S.inst.length?S.inst.map(function(i){
+    var remain=Math.max(0,i.total-i.paid),months=i.monthly>0?Math.ceil(remain/i.monthly):0;
+    var pct=i.total?Math.min(100,i.paid/i.total*100):0;
+    return '<div class="row"><div style="flex:1"><b>'+esc(i.name)+'</b><span class="muted" style="font-size:10px;display:block">'+esc(i.category)+' · next '+i.date+' · '+months+' payment'+(months===1?"":"s")+' left · '+money(remain)+' remaining</span><div class="progress" style="margin-top:7px"><i style="width:'+pct+'%"></i></div></div><div style="display:flex;gap:5px;align-items:center"><b>'+money(i.monthly)+'/mo</b><button class="btn icon" onclick="MPP.editInst(\''+i.id+'\')" title="Edit">✎</button><button class="btn icon danger" onclick="MPP.delInst(\''+i.id+'\')" title="Delete">×</button></div></div>';
+  }).join(""):'<div class="empty">No installments.</div>';
 }
 
 function renderGoals(){
-  $("goalList").innerHTML=S.goals.length?S.goals.map(g=>{
-    let pct=g.target?Math.min(100,g.saved/g.target*100):0;
-    return `<div class="row"><div style="flex:1"><div class="statline"><span class="goal-name">${esc(g.name)}</span><b>${money(g.saved)} / ${money(g.target)}</b></div><div class="progress"><i style="width:${pct}%"></i></div><div class="statline"><span>${g.date?"Target "+g.date:"No target date"}</span><span>${g.monthly?money(g.monthly)+"/mo":""}${pct>=100?' · <b class="good">Complete!</b>':''}</span></div></div><div style="display:flex;gap:5px"><button class="btn icon" onclick="editGoal('${g.id}')" title="Edit">✎</button><button class="btn icon danger" onclick="delGoal('${g.id}')" title="Delete">×</button></div></div>`;
-  }).join(""):`<div class="empty">No goals.</div>`;
+  if(!$("goalList"))return;
+  $("goalList").innerHTML=S.goals.length?S.goals.map(function(g){
+    var pct=g.target?Math.min(100,g.saved/g.target*100):0;
+    return '<div class="row"><div style="flex:1"><div class="statline"><span class="goal-name">'+esc(g.name)+'</span><b>'+money(g.saved)+' / '+money(g.target)+'</b></div><div class="progress"><i style="width:'+pct+'%"></i></div><div class="statline"><span>'+(g.date?"Target "+g.date:"No target date")+'</span><span>'+(g.monthly?money(g.monthly)+"/mo":"")+(pct>=100?' · <b class="good">Complete!</b>':"")+'</span></div></div><div style="display:flex;gap:5px"><button class="btn icon" onclick="MPP.editGoal(\''+g.id+'\')" title="Edit">✎</button><button class="btn icon danger" onclick="MPP.delGoal(\''+g.id+'\')" title="Delete">×</button></div></div>';
+  }).join(""):'<div class="empty">No goals.</div>';
 }
 
-function render(){fillMonthSelects();$("dashMonth").value=month;$("calMonth").value=month;renderDashboard();renderCalendar();renderTx();renderRecurring();renderInstallments();renderGoals();setupCats()}
+function render(){
+  try{
+    fillMonthSelects();
+    if($("dashMonth"))$("dashMonth").value=month;
+    if($("calMonth"))$("calMonth").value=month;
+    renderDashboard();renderCalendar();renderTx();renderRecurring();renderInstallments();renderGoals();setupCats();
+  }catch(e){showStartupError("Render failed: "+e.message);throw e}
+}
 
 // ---------- Edit functions ----------
 function editTx(id){
-  let x=S.tx.find(t=>t.id===id);if(!x)return;
+  var x=null;for(var i=0;i<S.tx.length;i++)if(S.tx[i].id===id){x=S.tx[i];break}
+  if(!x)return;
   $("txEditId").value=id;$("txType").value=x.type;setupCats();$("txAmount").value=x.amount;$("txDate").value=x.date;
   $("txCategory").value=x.category;$("txDesc").value=x.description;$("txStatus").value=x.status;$("txNotes").value=x.notes||"";
   $("txFormTitle").textContent="Edit transaction";$("txSubmit").textContent="Update";$("txCancel").style.display="";
@@ -465,7 +548,8 @@ function cancelTxEdit(){
   $("txForm").reset();$("txEditId").value="";$("txFormTitle").textContent="Add transaction";$("txSubmit").textContent="Add transaction";$("txCancel").style.display="none";$("txDate").value=iso(new Date());setupCats();
 }
 function editRec(id){
-  let r=S.rec.find(t=>t.id===id);if(!r)return;
+  var r=null;for(var i=0;i<S.rec.length;i++)if(S.rec[i].id===id){r=S.rec[i];break}
+  if(!r)return;
   $("recEditId").value=id;$("recType").value=r.type;setupCats();$("recAmount").value=r.amount;$("recStart").value=r.start;
   $("recCategory").value=r.category;$("recDesc").value=r.description;$("recDay").value=r.day;$("recEnd").value=r.end||"";
   $("recFormTitle").textContent="Edit recurring item";$("recSubmit").textContent="Update";$("recCancel").style.display="";
@@ -473,15 +557,17 @@ function editRec(id){
 }
 function cancelRecEdit(){$("recForm").reset();$("recEditId").value="";$("recFormTitle").textContent="Add recurring item";$("recSubmit").textContent="Add recurring";$("recCancel").style.display="none";$("recStart").value=iso(new Date());setupCats()}
 function editInst(id){
-  let i=S.inst.find(t=>t.id===id);if(!i)return;
-  $("instEditId").value=id;$("instName").value=i.name;$("instTotal").value=i.total;$("instMonthly").value=i.monthly;
-  $("instPaid").value=i.paid;$("instDate").value=i.date;$("instCategory").value=i.category;
+  var it=null;for(var i=0;i<S.inst.length;i++)if(S.inst[i].id===id){it=S.inst[i];break}
+  if(!it)return;
+  $("instEditId").value=id;$("instName").value=it.name;$("instTotal").value=it.total;$("instMonthly").value=it.monthly;
+  $("instPaid").value=it.paid;$("instDate").value=it.date;$("instCategory").value=it.category;
   $("instFormTitle").textContent="Edit installment";$("instSubmit").textContent="Update";$("instCancel").style.display="";
   document.querySelector('[data-view="installments"]').click();
 }
 function cancelInstEdit(){$("instForm").reset();$("instEditId").value="";$("instFormTitle").textContent="Add installment";$("instSubmit").textContent="Add installment";$("instCancel").style.display="none";$("instDate").value=iso(new Date())}
 function editGoal(id){
-  let g=S.goals.find(t=>t.id===id);if(!g)return;
+  var g=null;for(var i=0;i<S.goals.length;i++)if(S.goals[i].id===id){g=S.goals[i];break}
+  if(!g)return;
   $("goalEditId").value=id;$("goalName").value=g.name;$("goalTarget").value=g.target;$("goalSaved").value=g.saved;
   $("goalDate").value=g.date||"";$("goalMonthly").value=g.monthly||"";
   $("goalFormTitle").textContent="Edit goal";$("goalSubmit").textContent="Update";$("goalCancel").style.display="";
@@ -493,109 +579,148 @@ function cancelGoalEdit(){$("goalForm").reset();$("goalEditId").value="";$("goal
 function confirmModal(title,msg,onConfirm){
   $("modalTitle").textContent=title;$("modalMsg").textContent=msg;
   $("modalBg").classList.add("show");
-  $("modalConfirm").onclick=()=>{closeModal();onConfirm()};
+  $("modalConfirm").onclick=function(){closeModal();onConfirm()};
 }
 function closeModal(){$("modalBg").classList.remove("show")}
 
 // ---------- Delete ----------
-function delTx(id){confirmModal("Delete transaction?","This action cannot be undone.",()=>{S.tx=S.tx.filter(x=>x.id!==id);save();toast("Transaction deleted","success")})}
-function delRec(id){confirmModal("Delete recurring item?","Future projected entries will disappear.",()=>{S.rec=S.rec.filter(x=>x.id!==id);save();toast("Recurring item deleted","success")})}
-function delInst(id){confirmModal("Delete installment?","Payment plan will be removed.",()=>{S.inst=S.inst.filter(x=>x.id!==id);save();toast("Installment deleted","success")})}
-function delGoal(id){confirmModal("Delete savings goal?","Progress will be lost.",()=>{S.goals=S.goals.filter(x=>x.id!==id);save();toast("Goal deleted","success")})}
+function delTx(id){confirmModal("Delete transaction?","This action cannot be undone.",function(){S.tx=S.tx.filter(function(x){return x.id!==id});save();toast("Transaction deleted","success")})}
+function delRec(id){confirmModal("Delete recurring item?","Future projected entries will disappear.",function(){S.rec=S.rec.filter(function(x){return x.id!==id});save();toast("Recurring item deleted","success")})}
+function delInst(id){confirmModal("Delete installment?","Payment plan will be removed.",function(){S.inst=S.inst.filter(function(x){return x.id!==id});save();toast("Installment deleted","success")})}
+function delGoal(id){confirmModal("Delete savings goal?","Progress will be lost.",function(){S.goals=S.goals.filter(function(x){return x.id!==id});save();toast("Goal deleted","success")})}
 
 // ---------- Export / Import / Reset ----------
 function exportJSON(){
-  let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");
-  a.href=URL.createObjectURL(b);a.download="money-planner-backup.json";a.click();URL.revokeObjectURL(a.href);
-  toast("Backup downloaded","success");
-}
-$("import").onchange=async e=>{
   try{
-    let x=JSON.parse(await e.target.files[0].text());
-    if(!Array.isArray(x.tx)||!Array.isArray(x.rec)||!Array.isArray(x.inst)||!Array.isArray(x.goals))throw 0;
-    S=x;save();toast("Backup imported","success");
-  }catch{alert("Invalid backup file")}
-  e.target.value="";
-};
-function resetAll(){confirmModal("Reset all data?","Every transaction, goal, installment and recurring item will be deleted permanently.",()=>{S={tx:[],rec:[],inst:[],goals:[]};save();toast("All data reset","success")})}
+    var b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");
+    a.href=URL.createObjectURL(b);a.download="money-planner-backup.json";a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+    toast("Backup downloaded","success");
+  }catch(e){toast("Export failed: "+e.message,"error")}
+}
+function resetAll(){confirmModal("Reset all data?","Every transaction, goal, installment and recurring item will be deleted permanently.",function(){S={tx:[],rec:[],inst:[],goals:[]};save();toast("All data reset","success")})}
 
 // ---------- Theme ----------
 function applyTheme(t){
   document.documentElement.setAttribute("data-theme",t);
-  $("themeBtn").textContent=t==="dark"?"☀️":"🌙";
-  localStorage.setItem(THEME_KEY,t);
+  var b=$("themeBtn");if(b)b.textContent=t==="dark"?"☀️":"🌙";
+  try{localStorage.setItem(THEME_KEY,t)}catch(e){}
 }
 function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")}
-(function initTheme(){
-  let saved=localStorage.getItem(THEME_KEY);
-  let pref=saved||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+
+// ---------- Wire up everything (inside try) ----------
+try{
+  // Theme init
+  var saved=null;try{saved=localStorage.getItem(THEME_KEY)}catch(e){}
+  var pref=saved||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
   applyTheme(pref);
+
+  // Tabs
+  var tabs=document.querySelectorAll(".tab");
+  for(var ti=0;ti<tabs.length;ti++){
+    (function(b){
+      b.onclick=function(){
+        var all=document.querySelectorAll(".tab");
+        for(var i=0;i<all.length;i++)all[i].classList.remove("active");
+        var views=document.querySelectorAll(".view");
+        for(var j=0;j<views.length;j++)views[j].classList.remove("active");
+        b.classList.add("active");
+        var v=$(b.getAttribute("data-view"));if(v)v.classList.add("active");
+      };
+    })(tabs[ti]);
+  }
+
+  // Sorting
+  var sortThs=document.querySelectorAll(".table th[data-sort]");
+  for(var si=0;si<sortThs.length;si++){
+    (function(th){
+      th.onclick=function(){
+        var k=th.getAttribute("data-sort");
+        if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=-1}
+        renderTx();
+      };
+    })(sortThs[si]);
+  }
+
+  // Month selects
+  if($("dashMonth"))$("dashMonth").onchange=function(e){month=e.target.value;render()};
+  if($("calMonth"))$("calMonth").onchange=function(e){month=e.target.value;render()};
+  if($("search"))$("search").oninput=renderTx;
+  if($("filterType"))$("filterType").onchange=renderTx;
+  if($("filterStatus"))$("filterStatus").onchange=renderTx;
+  if($("txType"))$("txType").onchange=setupCats;
+  if($("recType"))$("recType").onchange=setupCats;
+
+  // Forms
+  if($("txForm"))$("txForm").onsubmit=function(e){
+    e.preventDefault();
+    var id=$("txEditId").value;
+    var data={type:$("txType").value,amount:+$("txAmount").value,date:$("txDate").value,category:$("txCategory").value,description:$("txDesc").value,status:$("txStatus").value,notes:$("txNotes").value};
+    if(id){S.tx=S.tx.map(function(t){return t.id===id?Object.assign({},t,data):t});toast("Transaction updated","success")}
+    else{S.tx.push(Object.assign({id:uid()},data));toast("Transaction added","success")}
+    save();cancelTxEdit();
+  };
+  if($("recForm"))$("recForm").onsubmit=function(e){
+    e.preventDefault();
+    var id=$("recEditId").value;
+    var data={type:$("recType").value,amount:+$("recAmount").value,start:$("recStart").value,end:$("recEnd").value,category:$("recCategory").value,description:$("recDesc").value,day:+$("recDay").value};
+    if(id){S.rec=S.rec.map(function(r){return r.id===id?Object.assign({},r,data):r});toast("Recurring item updated","success")}
+    else{S.rec.push(Object.assign({id:uid()},data));toast("Recurring item added","success")}
+    save();cancelRecEdit();
+  };
+  if($("instForm"))$("instForm").onsubmit=function(e){
+    e.preventDefault();
+    var id=$("instEditId").value;
+    var data={name:$("instName").value,total:+$("instTotal").value,monthly:+$("instMonthly").value,paid:+$("instPaid").value,date:$("instDate").value,category:$("instCategory").value};
+    if(id){S.inst=S.inst.map(function(i){return i.id===id?Object.assign({},i,data):i});toast("Installment updated","success")}
+    else{S.inst.push(Object.assign({id:uid()},data));toast("Installment added","success")}
+    save();cancelInstEdit();
+  };
+  if($("goalForm"))$("goalForm").onsubmit=function(e){
+    e.preventDefault();
+    var id=$("goalEditId").value;
+    var data={name:$("goalName").value,target:+$("goalTarget").value,saved:+$("goalSaved").value,date:$("goalDate").value,monthly:+$("goalMonthly").value};
+    if(id){S.goals=S.goals.map(function(g){return g.id===id?Object.assign({},g,data):g});toast("Goal updated","success")}
+    else{S.goals.push(Object.assign({id:uid()},data));toast("Goal added","success")}
+    save();cancelGoalEdit();
+  };
+
+  // Import
+  if($("import"))$("import").onchange=function(e){
+    var f=e.target.files&&e.target.files[0];if(!f)return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      try{
+        var x=JSON.parse(reader.result);
+        if(!x||!Array.isArray(x.tx)||!Array.isArray(x.rec)||!Array.isArray(x.inst)||!Array.isArray(x.goals))throw new Error("Missing arrays");
+        S=x;save();toast("Backup imported","success");
+      }catch(err){alert("Invalid backup file: "+err.message)}
+    };
+    reader.readAsText(f);
+    e.target.value="";
+  };
+
+  // Esc closes modal
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeModal()});
+
+  // Defaults
+  if($("txDate"))$("txDate").value=iso(new Date());
+  if($("recStart"))$("recStart").value=iso(new Date());
+  if($("instDate"))$("instDate").value=iso(new Date());
+
+  // Initial render
+  render();
+
+  // Expose inline onclick handlers
+  window.MPP={editTx:editTx,delTx:delTx,editRec:editRec,delRec:delRec,editInst:editInst,delInst:delInst,editGoal:editGoal,delGoal:delGoal};
+  // Keep global function names for inline onclick in buttons in the header/forms
+  window.exportJSON=exportJSON;window.resetAll=resetAll;window.toggleTheme=toggleTheme;window.closeModal=closeModal;
+  window.changeMonth=changeMonth;
+  window.cancelTxEdit=cancelTxEdit;window.cancelRecEdit=cancelRecEdit;window.cancelInstEdit=cancelInstEdit;window.cancelGoalEdit=cancelGoalEdit;
+
+}catch(e){showStartupError(e.message||String(e))}
+
 })();
-
-// ---------- Tabs ----------
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");$(b.dataset.view).classList.add("active");
-});
-
-// ---------- Sorting ----------
-document.querySelectorAll(".table th[data-sort]").forEach(th=>th.onclick=()=>{
-  let k=th.dataset.sort;
-  if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=-1}
-  renderTx();
-});
-
-// ---------- Event wiring ----------
-$("dashMonth").onchange=e=>{month=e.target.value;render()};
-$("calMonth").onchange=e=>{month=e.target.value;render()};
-$("search").oninput=renderTx;
-$("filterType").onchange=renderTx;
-$("filterStatus").onchange=renderTx;
-$("txType").onchange=setupCats;
-$("recType").onchange=setupCats;
-
-$("txForm").onsubmit=e=>{
-  e.preventDefault();
-  let id=$("txEditId").value;
-  let data={type:$("txType").value,amount:+$("txAmount").value,date:$("txDate").value,category:$("txCategory").value,description:$("txDesc").value,status:$("txStatus").value,notes:$("txNotes").value};
-  if(id){S.tx=S.tx.map(t=>t.id===id?{...t,...data}:t);toast("Transaction updated","success")}
-  else{S.tx.push({id:uid(),...data});toast("Transaction added","success")}
-  save();cancelTxEdit();
-};
-$("recForm").onsubmit=e=>{
-  e.preventDefault();
-  let id=$("recEditId").value;
-  let data={type:$("recType").value,amount:+$("recAmount").value,start:$("recStart").value,end:$("recEnd").value,category:$("recCategory").value,description:$("recDesc").value,day:+$("recDay").value};
-  if(id){S.rec=S.rec.map(r=>r.id===id?{...r,...data}:r);toast("Recurring item updated","success")}
-  else{S.rec.push({id:uid(),...data});toast("Recurring item added","success")}
-  save();cancelRecEdit();
-};
-$("instForm").onsubmit=e=>{
-  e.preventDefault();
-  let id=$("instEditId").value;
-  let data={name:$("instName").value,total:+$("instTotal").value,monthly:+$("instMonthly").value,paid:+$("instPaid").value,date:$("instDate").value,category:$("instCategory").value};
-  if(id){S.inst=S.inst.map(i=>i.id===id?{...i,...data}:i);toast("Installment updated","success")}
-  else{S.inst.push({id:uid(),...data});toast("Installment added","success")}
-  save();cancelInstEdit();
-};
-$("goalForm").onsubmit=e=>{
-  e.preventDefault();
-  let id=$("goalEditId").value;
-  let data={name:$("goalName").value,target:+$("goalTarget").value,saved:+$("goalSaved").value,date:$("goalDate").value,monthly:+$("goalMonthly").value};
-  if(id){S.goals=S.goals.map(g=>g.id===id?{...g,...data}:g);toast("Goal updated","success")}
-  else{S.goals.push({id:uid(),...data});toast("Goal added","success")}
-  save();cancelGoalEdit();
-};
-
-// Esc closes modal
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
-
-// ---------- Init ----------
-$("txDate").value=iso(new Date());
-$("recStart").value=iso(new Date());
-$("instDate").value=iso(new Date());
-render();
 </script>
 </body>
 </html>
